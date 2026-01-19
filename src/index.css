@@ -1,0 +1,114 @@
+/* En Tailwind v4, esta sola línea carga TODO (base, componentes y utilerías) */
+@import "tailwindcss";
+
+/* Tus estilos personalizados para el blog de contadores */
+body {
+  background-color: #F8F9FA; /* El blanco grisáceo profesional */
+  margin: 0;
+  /* Aplicamos la fuente aquí también por seguridad */
+  font-family: "Montserrat", sans-serif;
+  color: #1A1C1E;
+/* Peso base más delgado pero legible */
+  font-weight: 300; 
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  letter-spacing: -0.01em;
+}
+
+@layer utilities {
+  @keyframes ring {
+    0%, 100% { transform: rotate(0deg); }
+    20%, 60% { transform: rotate(-15deg); }
+    40%, 80% { transform: rotate(15deg); }
+  }
+
+  /* La animación se activa cuando el ratón entra al contenedor con clase 'group' */
+  .group:hover .animate-ring {
+    animation: ring 0.8s ease-in-out infinite;
+    transform-origin: top center;
+  }
+}
+
+/* --- ESTILOS EXPLÍCITOS PARA EL CUERPO DEL BLOG --- */
+.blog-content {
+  color: #1A1C1E; /* Gris casi negro para no cansar la vista */
+  line-height: 1.8; /* Espacio generoso entre líneas */
+  font-size: 1.25rem; /* Tamaño de letra grande (20px) */
+}
+
+/* Estilo para todos los párrafos */
+.blog-content p {
+  margin-bottom: 2rem; /* Espacio entre párrafos */
+  font-weight: 400; /* Peso normal (Inter o Montserrat) */
+}
+
+/* Estilo para los títulos secundarios (H2) */
+.blog-content h2 {
+  font-size: 2.25rem;
+  font-weight: 700;
+  color: #111827;
+  margin-top: 3.5rem;
+  margin-bottom: 1.5rem;
+  letter-spacing: -0.02em;
+}
+
+/* Estilo para las negritas */
+.blog-content strong {
+  font-weight: 700;
+  color: #000;
+}
+
+/* --- ESTILO MINIMALISTA PARA CITAS (BLOCKQUOTE) --- */
+.blog-content blockquote {
+  /* Quitamos el fondo y los bordes redondeados exagerados */
+  background: transparent;
+  padding: 1rem 0 1rem 2rem; /* Espacio arriba, abajo y a la izquierda */
+  margin: 2.5rem 0;
+  
+  /* Una línea azul más delgada y elegante */
+  border-left: 3px solid #2563EB; 
+  
+  /* Texto más integrado con el resto del contenido */
+  font-style: italic;
+  font-size: 1.35rem; /* Solo un poco más grande que el texto normal */
+  color: #4B5563; /* Un gris intermedio que no grita */
+  font-weight: 500;
+  line-height: 1.6;
+}
+
+/* --- ESTILOS PARA LISTAS EN EL BLOG --- */
+
+/* Contenedor de la lista (Desordenada y Ordenada) */
+.blog-content ul, 
+.blog-content ol {
+  margin-bottom: 2.5rem; /* Espacio igual al de los párrafos */
+  padding-left: 1.5rem;  /* Indentación para que no se pegue al borde */
+}
+
+/* Elemento de la lista */
+.blog-content li {
+  margin-bottom: .3rem;   /* Espacio entre cada punto */
+  padding-left: 0.5rem;  /* Separación interna del texto y la viñeta */
+  font-weight: 400;      /* Peso normal para lectura fluida */
+}
+
+/* Estilo específico para las viñetas (bolitas) */
+.blog-content ul {
+  list-style-type: disc;
+}
+
+/* Ponemos las viñetas de color azul para que se vea premium */
+.blog-content ul li::marker {
+  color: #2563EB; 
+  font-size: 1.1em;
+}
+
+/* Estilo para listas numeradas (1, 2, 3...) */
+.blog-content ol {
+  list-style-type: decimal;
+}
+
+.blog-content ol li::marker {
+  color: #2563EB;
+  font-weight: 700;
+}
