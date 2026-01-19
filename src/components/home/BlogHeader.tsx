@@ -5,7 +5,7 @@ export default function BlogHeader({ onSearch }: { onSearch: (val: string) => vo
     <div className="text-center pt-12 pb-8 space-y-4">
       {/* Cambiado de font-black a font-bold y tracking-tight */}
       <h1 className="text-5xl md:text-7xl font-semibold text-gray-900 tracking-tight">
-        Blog de <span className="text-blue-600 font-semibold">Xtracta</span>
+        Nuestro Blog <span className="text-blue-600 font-semibold">Xtracta</span>
       </h1>
       <p className="text-xl text-gray-400 max-w-2xl mx-auto font-light">
         Pasión por la contabilidad inteligente y la tecnología.
