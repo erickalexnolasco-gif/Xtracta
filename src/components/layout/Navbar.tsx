@@ -3,13 +3,13 @@ import { Bell } from 'lucide-react';
 import logo from '../../assets/logo.png';
 
 interface NavbarProps {
-  onReset: () => void;
+  onReset?: () => void;
 }
 
 export default function Navbar({ onReset }: NavbarProps) {
   const navLinks = [
     { name: 'Catálogos', path: '#' },
-    { name: 'Categorías', path: '#' },
+    { name: 'Categorías', path: '/' },
     { name: 'Herramientas', path: '/herramientas/convertidor-xml' },
     { name: 'Nosotros', path: '#' },
   ];

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, Clock, Calendar, User, FileText, Share2, Loader2 } from 'lucide-react';
-import { supabase } from '../../lib/supabase';
+import { supabase } from '../lib/supabase'; // Importamos la conexión
 
 export default function PostDetail() {
   const { id } = useParams();
@@ -21,7 +21,17 @@ export default function PostDetail() {
       setLoading(true);
       const { data, error } = await supabase
         .from('posts')
-        .select('*')
+        .select(`
+          id, 
+          title, 
+          summary,
+          content, 
+          image_url, 
+          published_at, 
+          read_time, 
+          authors(name), 
+          categories(name), 
+          types(name)`)
         .eq('id', id) // Buscamos por el ID de la URL
         .single();
 
@@ -83,11 +93,11 @@ export default function PostDetail() {
 
           <div className="flex flex-wrap items-center gap-y-4 gap-x-8 text-[14px] font-medium text-gray-400">
             <span className="bg-blue-600 text-white px-4 py-1 rounded-full font-medium tracking-normal">
-              {post.category}
+              {post.categories.name}
             </span>
             <div className="flex items-center gap-2">
               <User className="w-4 h-4 text-blue-600" />
-              <span className="text-gray-900">{post.author}</span>
+              <span className="text-gray-900">{post.authors.name}</span>
             </div>
             <div className="flex items-center gap-2">
               <Calendar className="w-4 h-4" />
@@ -95,7 +105,7 @@ export default function PostDetail() {
             </div>
             <div className="flex items-center gap-2">
               <FileText className="w-4 h-4" />
-              <span>{post.type_post}</span>
+              <span>{post.types.name}</span>
             </div>
             <div className="items-center gap-2 border-l border-gray-200 pl-8 hidden md:flex">
               <Clock className="w-4 h-4 text-blue-500" />
@@ -132,7 +142,7 @@ export default function PostDetail() {
           <main className="lg:col-span-9 space-y-12">
             <div id="resumen" className="max-w-3xl">
               <p className="text-xl md:text-2xl text-gray-900 font-stretch-50% leading-relaxed text-justify">
-                {post.excerpt}
+                {post.summary}
               </p>
             </div>
 
