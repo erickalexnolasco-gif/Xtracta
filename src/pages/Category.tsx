@@ -1,3 +1,4 @@
+//src/pages/Category.tsx
 import { useState } from 'react';
 import BlogHeader from '../components/category/BlogHeader';
 import CategoryBar from '../components/category/CategoryBar';

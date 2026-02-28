@@ -1,3 +1,4 @@
+//src/components/category/BlogGrid.tsx
 import { useState, useEffect } from 'react';
 import { supabase } from '../../lib/supabase';
 import Pagination from '../ui/Pagination';

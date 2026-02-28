@@ -1,3 +1,4 @@
+//src/components/ui/Pagination.tsx
 import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from 'lucide-react';
 
 // Definimos qué información necesita este componente para funcionar

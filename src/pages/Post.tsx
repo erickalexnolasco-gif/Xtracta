@@ -1,182 +1,208 @@
-import { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
-import { ArrowLeft, Clock, Calendar, User, FileText, Share2, Loader2 } from 'lucide-react';
-import { supabase } from '../lib/supabase'; // Importamos la conexión
+// src/pages/Post.tsx
+import { useEffect, useState, useMemo } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { Loader2 } from 'lucide-react';
+import { supabase } from '../lib/supabase';
+import { toast, Toaster } from 'sonner';
 
-export default function PostDetail() {
-  const { id } = useParams();
+// Componentes de Post
+import PostHeader from '../components/post/PostHeader';
+import PostContent from '../components/post/PostContent';
+import TableOfContents from '../components/post/TableOfContents';
+import RelatedPosts from '../components/post/RelatedPosts';
+import CommentsSection from '../components/post/CommentsSection';
+
+// Componentes UI
+import ProgressBar from '../components/ui/ProgressBar';
+import ScrollToTopButton from '../components/ui/ScrollToTopButton';
+
+export default function Post() {
+  const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
+
   const [post, setPost] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [activeSection, setActiveSection] = useState("");
+  const [readingProgress, setReadingProgress] = useState(0);
+  
+  const [isLiked, setIsLiked] = useState(false);
+  const [isSaved, setIsSaved] = useState(false);
+  const [likesCount, setLikesCount] = useState(0);
+  const [viewsCount, setViewsCount] = useState(0);
+  
+  const [showScrollTop, setShowScrollTop] = useState(false);
+  const [relatedPosts, setRelatedPosts] = useState<any[]>([]);
 
-  const sections = [
-    { id: "resumen", title: "Resumen" },
-    { id: "importancia", title: "Importancia del Cambio" },
-    { id: "automatizacion", title: "Automatización" },
-    { id: "conclusiones", title: "Conclusiones" }
-  ];
+  // Tabla de contenidos
+  const tableOfContents = useMemo(() => {
+    if (!post?.content) return [];
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = post.content;
+    const headings = tempDiv.querySelectorAll('h2');
+    return Array.from(headings).map((heading, index) => ({
+      id: heading.id || `section-${index}`,
+      title: heading.textContent || '',
+    }));
+  }, [post?.content]);
 
+  // Fetch post
   useEffect(() => {
-    async function getPost() {
+    async function fetchPost() {
+      if (!id) return;
       setLoading(true);
-      const { data, error } = await supabase
-        .from('posts')
-        .select(`
-          id, 
-          title, 
-          summary,
-          content, 
-          image_url, 
-          published_at, 
-          read_time, 
-          authors(name), 
-          categories(name), 
-          types(name)`)
-        .eq('id', id) // Buscamos por el ID de la URL
-        .single();
+      
+      try {
+        const { data: postData, error: postError } = await supabase
+          .from('posts')
+          .select('id, title, summary, content, image_url, published_at, read_time, authors(name, username), categories(name), types(name)')
+          .eq('id', id)
+          .single();
 
-      if (error) {
-        console.error('Error:', error.message);
-      } else {
-        setPost(data);
-        document.title = `${data.title} - Xtracta`;
-      }
-      setLoading(false);
-    }
-
-    if (id) getPost();
-
-    // Lógica de scroll
-    const handleScroll = () => {
-      const scrollPosition = window.scrollY + 250;
-      sections.forEach(section => {
-        const element = document.getElementById(section.id);
-        if (element && element.offsetTop <= scrollPosition) {
-          setActiveSection(section.id);
+        if (postError) throw postError;
+        if (!postData) {
+          navigate('/');
+          return;
         }
+        
+        setPost(postData);
+        setLikesCount(Math.floor(Math.random() * 200) + 40);
+        setViewsCount(Math.floor(Math.random() * 2500) + 400);
+        document.title = `${postData.title} - Xtracta`;
+
+        const { data: related } = await supabase
+          .from('posts')
+          .select('id, title, image_url, categories(name)')
+          .neq('id', id)
+          .limit(3);
+        
+        if (related) setRelatedPosts(related);
+        
+      } catch (error) {
+        console.error('Error:', error);
+        toast.error('Error al cargar el artículo');
+        navigate('/');
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchPost();
+  }, [id, navigate]);
+
+  // Asignar IDs a H2
+  useEffect(() => {
+    if (!post?.content) return;
+    
+    const timer = setTimeout(() => {
+      const contentElement = document.querySelector('.article-content');
+      if (!contentElement) return;
+
+      const headings = contentElement.querySelectorAll('h2');
+      if (headings.length === 0) return;
+      
+      headings.forEach((heading, index) => {
+        const id = `section-${index}`;
+        heading.id = id;
+        heading.style.scrollMarginTop = '120px';
       });
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, [post?.content]);
+
+  // Scroll tracking
+  useEffect(() => {
+    const handleScroll = () => {
+      const windowHeight = window.innerHeight;
+      const documentHeight = document.documentElement.scrollHeight;
+      const scrollTop = window.scrollY;
+      const progress = (scrollTop / (documentHeight - windowHeight)) * 100;
+      setReadingProgress(Math.min(progress, 100));
+      setShowScrollTop(scrollTop > 600);
+
+      if (tableOfContents.length > 0) {
+        const scrollPosition = scrollTop + 250;
+        for (let i = tableOfContents.length - 1; i >= 0; i--) {
+          const element = document.getElementById(tableOfContents[i].id);
+          if (element && element.offsetTop <= scrollPosition) {
+            setActiveSection(tableOfContents[i].id);
+            break;
+          }
+        }
+      }
     };
 
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [id]);
+  }, [tableOfContents]);
 
-  if (loading) return (
-    <div className="min-h-screen flex items-center justify-center">
-      <Loader2 className="w-12 h-12 text-blue-600 animate-spin" />
-    </div>
-  );
+  // Handlers
+  const handleLike = () => {
+    const newLiked = !isLiked;
+    setIsLiked(newLiked);
+    setLikesCount(prev => newLiked ? prev + 1 : prev - 1);
+    toast.success(newLiked ? '¡Te gustó este artículo!' : 'Like removido');
+  };
 
-  if (!post) return (
-    <div className="text-center py-20">
-      <h2 className="text-2xl font-bold">Artículo no encontrado</h2>
-      <Link to="/" className="text-blue-600 mt-4 block underline">Volver al blog</Link>
-    </div>
-  );
+  const handleSave = () => {
+    const newSaved = !isSaved;
+    setIsSaved(newSaved);
+    toast.success(newSaved ? '¡Artículo guardado!' : 'Removido de guardados');
+  };
 
+  // Loading
+  if (loading) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center gap-4 bg-white">
+        <Loader2 className="w-12 h-12 text-blue-600 animate-spin" />
+        <p className="text-gray-500 font-semibold">Cargando artículo...</p>
+      </div>
+    );
+  }
+
+  if (!post) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center gap-6 bg-white">
+        <h2 className="text-3xl font-bold text-gray-900">Artículo no encontrado</h2>
+        <p className="text-gray-500 text-lg">El artículo que buscas no existe.</p>
+      </div>
+    );
+  }
+
+  // Render
   return (
-    <div className="bg-white min-h-screen font-sans">
-      <div className="max-w-7xl mx-auto px-4 lg:px-8">
-        
-        <header className="py-5 border-b border-gray-100 mb-12 space-y-3">
-          <Link 
-            to="/" 
-            className="flex items-center gap-2 text-blue-600 hover:text-blue-700 transition-colors font-semibold text-sm tracking-tight group w-fit"
-          >
-            <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-            Blog
-          </Link>
+    <>
+      <Toaster position="bottom-right" richColors />
+      <ProgressBar progress={readingProgress} />
 
-          <h1 className="text-3xl md:text-4xl lg:text-5xl font-semibold text-gray-900 leading-[1.1] tracking-tight max-w-6xl">
-            {post.title}
-          </h1>
+      <div className="bg-white min-h-screen ">
+        <div className="max-w-6xl container mx-auto px-3 pt-19 pb-20 grow">
+          
+          <PostHeader
+            post={post}
+            viewsCount={viewsCount}
+          />
 
-          <div className="flex flex-wrap items-center gap-y-4 gap-x-8 text-[14px] font-medium text-gray-400">
-            <span className="bg-blue-600 text-white px-4 py-1 rounded-full font-medium tracking-normal">
-              {post.categories.name}
-            </span>
-            <div className="flex items-center gap-2">
-              <User className="w-4 h-4 text-blue-600" />
-              <span className="text-gray-900">{post.authors.name}</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Calendar className="w-4 h-4" />
-              <span>{new Date(post.published_at).toLocaleDateString()}</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <FileText className="w-4 h-4" />
-              <span>{post.types.name}</span>
-            </div>
-            <div className="items-center gap-2 border-l border-gray-200 pl-8 hidden md:flex">
-              <Clock className="w-4 h-4 text-blue-500" />
-              <span className="text-gray-900">{post.read_time}</span>
-            </div>
-          </div>
-        </header>
-
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-16">
-          <aside className="hidden lg:block lg:col-span-3">
-            <div className="sticky top-32 space-y-12">
-              <nav className="space-y-6">
-                <p className="text-xl md:text-2xl font-light text-gray-900">En este artículo</p>
-                <ul className="space-y-2">
-                  {sections.map((section) => (
-                    <li key={section.id}>
-                      <a 
-                        href={`#${section.id}`}
-                        className={`block text-base transition-all duration-300 ${
-                          activeSection === section.id 
-                          ? "text-blue-600 font-medium translate-x-1.5" 
-                          : "text-gray-400 hover:text-gray-600"
-                        }`}
-                      >
-                        {section.title}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              </nav>
-            </div>
-          </aside>
-
-          <main className="lg:col-span-9 space-y-12">
-            <div id="resumen" className="max-w-3xl">
-              <p className="text-xl md:text-2xl text-gray-900 font-stretch-50% leading-relaxed text-justify">
-                {post.summary}
-              </p>
-            </div>
-
-            <div className="max-w-2xl">
-              <div className="rounded-3xl overflow-hidden shadow-lg border border-gray-100 aspect-video">
-                <img 
-                  src={post.image_url} 
-                  alt={post.title} 
-                  className="w-full h-full object-cover" 
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-16">
+            <aside className="hidden lg:block lg:col-span-3">
+              <div className="sticky top-28">
+                <TableOfContents 
+                  sections={tableOfContents} 
+                  activeSection={activeSection} 
                 />
               </div>
-            </div>
+            </aside>
 
-            <article className="blog-content">
-              <div dangerouslySetInnerHTML={{ __html: post.content }} />
-            </article>
-
-            <div className="pt-16 mt-16 border-t border-gray-100 flex items-center justify-between">
-              <div className="flex items-center gap-4">
-                <div className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold text-xs">
-                  XT
-                </div>
-                <div>
-                  <p className="text-sm font-bold text-gray-900">{post.author}</p>
-                  <p className="text-xs text-gray-400 font-medium tracking-tight">Especialista Xtracta</p>
-                </div>
-              </div>
-              <button className="flex items-center gap-2 text-gray-400 hover:text-blue-600 transition-colors text-sm font-bold uppercase tracking-widest">
-                <Share2 size={18} /> Compartir
-              </button>
-            </div>
-          </main>
+            <main className="lg:col-span-9">
+              <PostContent post={post} />
+              <CommentsSection />
+            </main>
+          </div>
+          {/* RelatedPosts FUERA del grid, abajo de todo */}
+        <RelatedPosts />
         </div>
       </div>
-    </div>
+
+      <ScrollToTopButton show={showScrollTop} />
+    </>
   );
 }

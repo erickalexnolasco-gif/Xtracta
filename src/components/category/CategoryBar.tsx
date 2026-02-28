@@ -1,3 +1,4 @@
+//src/components/category/CategoryBar.tsx
 // Definimos lo que recibe el componente (Props)
 interface CategoryBarProps {
   selectedCategory: string;

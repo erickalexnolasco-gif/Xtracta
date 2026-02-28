@@ -1,3 +1,4 @@
+//src/utils/excelGenerator.ts
 import * as XLSX from 'xlsx';
 
 export const downloadExcel = (data: any[]) => {

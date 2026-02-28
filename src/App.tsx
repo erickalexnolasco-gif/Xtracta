@@ -1,3 +1,4 @@
+//src/App.tsx
 import { useEffect } from 'react';
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 
@@ -9,7 +10,7 @@ import ScrollToTop from './components/ui/ScrollToTop';
 // Páginas (Pages)
 import Landing from './pages/Landing';
 import Category from './pages/Category';
-import Post from './pages/Post'; // Cambia el nombre de PostDetail.tsx a Post.tsx en src/pages/
+import Post from './pages/Post';
 
 // Herramientas
 import XMLConverter from './components/tools/XMLConverter';
@@ -26,37 +27,47 @@ function TitleHandler() {
 }
 
 function App() {
+  const location = useLocation();
+  const isPostPage = location.pathname.includes('/post/');
+
   return (
-    <BrowserRouter>
+    <>
       <ScrollToTop />
       <TitleHandler />
       
-      <div className="min-h-screen bg-white flex flex-col font-sans">
+      <div className="min-h-screen flex flex-col font-sans">
         <Navbar /> 
         
-        <main className="container mx-auto px-4 pt-24 pb-20 max-w-7xl grow">
+        {isPostPage ? (
+          // Post SIN container ni padding
           <Routes>
-            {/* 1. LANDING PAGE REAL */}
-            <Route path="/" element={<Category />} />
-
-            {/* 1. LANDING PAGE REAL */}
-            <Route path="/home" element={<Landing />} />
-
-            {/* 2. PAGINA DE BLOG / CATEGORIAS */}
-            <Route path="/category" element={<Category />} />
-
-            {/* 3. DETALLE DEL POST */}
             <Route path="/post/:id" element={<Post />} />
-
-            {/* 4. HERRAMIENTAS */}
-            <Route path="/herramientas/convertidor-xml" element={<XMLConverter />} />
           </Routes>
-        </main>
+        ) : (
+          // Resto de páginas CON container y padding
+          <main className="container mx-auto px-3 pt-24 pb-20 max-w-6xl grow">
+            <Routes>
+              <Route path="/" element={<Category />} />
+              <Route path="/home" element={<Landing />} />
+              <Route path="/category" element={<Category />} />
+              <Route path="/herramientas/convertidor-xml" element={<XMLConverter />} />
+            </Routes>
+          </main>
+        )}
 
         <Footer />
       </div>
+    </>
+  );
+}
+
+// Wrapper para poder usar useLocation dentro del componente
+function AppWrapper() {
+  return (
+    <BrowserRouter>
+      <App />
     </BrowserRouter>
   );
 }
 
-export default App;
+export default AppWrapper;

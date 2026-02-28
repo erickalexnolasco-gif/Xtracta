@@ -1,11 +1,10 @@
+//src/components/layout/Footer.tsx
 import { Linkedin, Twitter, Instagram, Mail } from 'lucide-react';
-// Importamos tu logo desde la carpeta de assets
-import logo from '../../assets/logo.png';
 
 export default function Footer() {
   return (
     <footer className="bg-white border-t border-gray-100 pt-20 pb-10 mt-auto">
-      <div className="container mx-auto px-4 max-w-7xl">
+      <div className="container mx-auto px-4 max-w-6xl">
         {/* Grid Principal del Footer */}
         <div className="grid grid-cols-1 md:grid-cols-12 gap-12">
           
@@ -13,11 +12,7 @@ export default function Footer() {
           <div className="md:col-span-5 space-y-6">
             <div className="flex items-center gap-3">
               {/* Tu logo PNG */}
-              <img 
-                src={logo} 
-                alt="Xtracta Logo" 
-                className="h-9 w-auto object-contain" 
-              />
+              <h2 className='text-5xl font-light w-auto object-contain' style={{ fontFamily: 'MuseoModerno, sans-serif' }}>Xtracta</h2>
             </div>
             <p className="text-gray-500 text-lg leading-relaxed max-w-sm font-medium">
               La plataforma definitiva para contadores modernos en México. 

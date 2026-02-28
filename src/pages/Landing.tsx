@@ -1,3 +1,4 @@
+//src/pages/Landing.tsx
 export default function Landing() {
   return (
     <div className="py-20 text-center">

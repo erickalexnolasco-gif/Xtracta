@@ -1,3 +1,4 @@
+//src/utils/pdfGenerator.ts
 import { jsPDF } from 'jspdf';
 
 export const generateInvoicePDF = async (info: any) => {
