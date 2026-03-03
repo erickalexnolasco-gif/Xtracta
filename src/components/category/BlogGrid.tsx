@@ -24,7 +24,7 @@ export default function BlogGrid({ selectedCategory, searchQuery }: BlogGridProp
       setLoading(true);
       const { data, error } = await supabase
         .from('posts')
-        .select("id, title, summary, image_url, published_at, authors(name,username), categories(name)")
+        .select("id, title, summary, image_url, published_at, views, likes, shares, authors(name,username), categories(name)")
         .order('published_at', { ascending: false });
 
       if (error) {

@@ -1,3 +1,4 @@
+//src/components/category/SocialPostCard.tsx
 import { Link } from 'react-router-dom';
 import { 
   MoreHorizontal, 
@@ -14,6 +15,9 @@ interface SocialPostCardProps {
     summary: string;
     image_url: string;
     published_at: string;
+    views?: number;
+    likes?: number;
+    shares?: number;
     authors: {
       name: string;
       username: string;
@@ -44,6 +48,13 @@ export default function SocialPostCard({ post }: SocialPostCardProps) {
       month: 'short', 
       year: 'numeric' 
     });
+  };
+
+  // Formatear números grandes (1.2K, 3.5M, etc.)
+  const formatNumber = (num: number = 0) => {
+    if (num >= 1000000) return `${(num / 1000000).toFixed(1)}M`;
+    if (num >= 1000) return `${(num / 1000).toFixed(1)}K`;
+    return num.toString();
   };
 
   // ==================== COMPONENTE VERIFICADO (INSTAGRAM STYLE) ====================
@@ -115,12 +126,12 @@ export default function SocialPostCard({ post }: SocialPostCardProps) {
         </span>
       </div>
 
-      {/* FOOTER: ACCIONES */}
+      {/* FOOTER: ACCIONES CON MÉTRICAS REALES */}
       <div className="mt-auto pt-5 border-t border-slate-100 flex items-center justify-between">
         <div className="flex items-center gap-4">
           <button className="flex items-center gap-1.5 text-slate-500 hover:text-red-500 transition-colors group/btn">
             <Heart size={18} className="group-hover/btn:fill-red-500/10" /> 
-            <span className="text-xs font-bold text-slate-500">85</span>
+            <span className="text-xs font-bold text-slate-500">{formatNumber(post.likes || 0)}</span>
           </button>
           <button className="flex items-center gap-1.5 text-slate-500 hover:text-blue-600 transition-colors group/btn">
             <MessageCircle size={18} className="group-hover/btn:fill-blue-500/10" /> 
@@ -128,13 +139,13 @@ export default function SocialPostCard({ post }: SocialPostCardProps) {
           </button>
           <button className="flex items-center gap-1.5 text-slate-500 hover:text-blue-600 transition-colors">
             <Share2 size={18} /> 
-            <span className="text-xs font-bold text-slate-500">9</span>
+            <span className="text-xs font-bold text-slate-500">{formatNumber(post.shares || 0)}</span>
           </button>
         </div>
         
         <div className="flex items-center gap-1.5 text-slate-500">
           <Eye size={18} />
-          <span className="text-xs font-bold tracking-widest">340 Vistas</span>
+          <span className="text-xs font-bold tracking-widest">{formatNumber(post.views || 0)} Vistas</span>
         </div>
       </div>
     </article>

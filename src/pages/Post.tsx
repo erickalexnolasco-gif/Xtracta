@@ -24,14 +24,7 @@ export default function Post() {
   const [loading, setLoading] = useState(true);
   const [activeSection, setActiveSection] = useState("");
   const [readingProgress, setReadingProgress] = useState(0);
-  
-  const [isLiked, setIsLiked] = useState(false);
-  const [isSaved, setIsSaved] = useState(false);
-  const [likesCount, setLikesCount] = useState(0);
-  const [viewsCount, setViewsCount] = useState(0);
-  
   const [showScrollTop, setShowScrollTop] = useState(false);
-  const [relatedPosts, setRelatedPosts] = useState<any[]>([]);
 
   // Tabla de contenidos
   const tableOfContents = useMemo(() => {
@@ -65,17 +58,7 @@ export default function Post() {
         }
         
         setPost(postData);
-        setLikesCount(Math.floor(Math.random() * 200) + 40);
-        setViewsCount(Math.floor(Math.random() * 2500) + 400);
         document.title = `${postData.title} - Xtracta`;
-
-        const { data: related } = await supabase
-          .from('posts')
-          .select('id, title, image_url, categories(name)')
-          .neq('id', id)
-          .limit(3);
-        
-        if (related) setRelatedPosts(related);
         
       } catch (error) {
         console.error('Error:', error);
@@ -135,20 +118,6 @@ export default function Post() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, [tableOfContents]);
 
-  // Handlers
-  const handleLike = () => {
-    const newLiked = !isLiked;
-    setIsLiked(newLiked);
-    setLikesCount(prev => newLiked ? prev + 1 : prev - 1);
-    toast.success(newLiked ? '¡Te gustó este artículo!' : 'Like removido');
-  };
-
-  const handleSave = () => {
-    const newSaved = !isSaved;
-    setIsSaved(newSaved);
-    toast.success(newSaved ? '¡Artículo guardado!' : 'Removido de guardados');
-  };
-
   // Loading
   if (loading) {
     return (
@@ -174,13 +143,10 @@ export default function Post() {
       <Toaster position="bottom-right" richColors />
       <ProgressBar progress={readingProgress} />
 
-      <div className="bg-white min-h-screen ">
+      <div className="bg-white min-h-screen">
         <div className="max-w-6xl container mx-auto px-3 pt-19 pb-20 grow">
           
-          <PostHeader
-            post={post}
-            viewsCount={viewsCount}
-          />
+          <PostHeader post={post} />
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-16">
             <aside className="hidden lg:block lg:col-span-3">
@@ -197,8 +163,9 @@ export default function Post() {
               <CommentsSection />
             </main>
           </div>
+          
           {/* RelatedPosts FUERA del grid, abajo de todo */}
-        <RelatedPosts />
+          <RelatedPosts />
         </div>
       </div>
 

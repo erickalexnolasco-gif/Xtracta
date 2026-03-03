@@ -1,31 +1,47 @@
 // src/components/post/PostContent.tsx
 import DOMPurify from 'dompurify';
-import { Heart, Eye, MessageSquare } from 'lucide-react';  // 👈 ESTE IMPORT
+import { Heart, MessageCircle, Eye, Share2 } from 'lucide-react';
+import { usePostMetrics } from '../../hooks/usePostMetrics';
+import { toast } from 'sonner';
 
 interface PostContentProps {
   post: any;
 }
 
 export default function PostContent({ post }: PostContentProps) {
-    return (
+  const { metrics, isLiked, toggleLike, handleShare } = usePostMetrics(post.id);
+
+  const onShare = async () => {
+    // Copiar link al portapapeles
+    const url = window.location.href;
+    try {
+      await navigator.clipboard.writeText(url);
+      toast.success('¡Link copiado!');
+      handleShare(); // Incrementar contador
+    } catch (error) {
+      toast.error('Error al copiar link');
+    }
+  };
+
+  return (
     <>
-      {/* Introducción / Lead (texto grande antes de la imagen) */}
+      {/* Lead/Intro grande ANTES de la imagen */}
       {post.summary && (
-        <p className="text-xl md:text-2xl text-[#424245] font-normal leading-normal mb-16 tracking-tight serif-body">
+        <p className="text-2xl md:text-3xl text-[#424245] font-normal leading-[1.4] mb-16 tracking-tight serif-body">
           {post.summary}
         </p>
       )}
 
-      {/* Imagen destacada */}
+      {/* Imagen destacada con caption */}
       {post.image_url && (
-        <figure className="mb-16 mx-.5 lg:mx-0">
+        <figure className="mb-16 -mx-6 lg:mx-0">
           <img 
-            src={post.image_url} 
-            alt={post.title} 
-            className="rounded-[2.5rem] w-full h-auto object-cover aspect-video"
+            alt={post.title}
+            className="rounded-[2.5rem] w-full h-auto object-cover aspect-video shadow-2xl" 
+            src={post.image_url}
           />
-          <figcaption className="text-[13px] font-medium text-center mt-6 text-[#86868b] font-sans italic">
-            {post.title}. © 2026 Xtracta
+          <figcaption className="text-[13px] text-center mt-6 text-[#86868b] font-sans italic">
+            {post.title}. © 2024 Xtracta
           </figcaption>
         </figure>
       )}
@@ -33,31 +49,57 @@ export default function PostContent({ post }: PostContentProps) {
       {/* Contenido del artículo */}
       <article 
         className="article-content"
-        dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(post.content) }} 
-    />
+        dangerouslySetInnerHTML={{ 
+          __html: DOMPurify.sanitize(post.content)
+        }} 
+      />
 
-      {/* Footer con stats y tags - CON ICONOS LUCIDE */}
+      {/* Footer con stats y tags - CON DATOS REALES */}
       <div className="mt-24 pt-12 border-t border-gray-100 flex flex-wrap items-center justify-between gap-6">
         <div className="flex items-center gap-6">
-          <button className="flex items-center gap-2.5 text-[15px] font-medium text-[#1d1d1f] group">
-            <Heart className="w-5 h-5 text-gray-400 group-hover:text-red-500 transition-colors" />
-            <span>124 <span className="text-gray-400 font-normal">Likes</span></span>
+          <button 
+            onClick={toggleLike}
+            disabled={isLiked}
+            className="flex items-center gap-2.5 text-[15px] font-medium text-[#1d1d1f] group disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <Heart 
+              className={`w-5 h-5 transition-colors ${
+                isLiked 
+                  ? 'text-red-500 fill-red-500' 
+                  : 'text-gray-400 group-hover:text-red-500'
+              }`}
+            />
+            <span>{metrics.likes} <span className="text-gray-400 font-normal">Likes</span></span>
           </button>
+          
           <button className="flex items-center gap-2.5 text-[15px] font-medium text-[#1d1d1f] group">
-            <MessageSquare className="w-5 h-5 text-gray-400 group-hover:text-blue-500 transition-colors" />
+            <MessageCircle className="w-5 h-5 text-gray-400 group-hover:text-blue-500 transition-colors" />
             <span>18 <span className="text-gray-400 font-normal">Comentarios</span></span>
           </button>
-          <button className="flex items-center gap-2.5 text-[15px] font-medium text-[#1d1d1f] group">
-            <Eye className="w-5 h-5 text-gray-400 group-hover:text-blue-500 transition-colors" />
-            <span>2.4k <span className="text-gray-400 font-normal">Vistas</span></span>
+          
+          <div className="flex items-center gap-2.5 text-[15px] font-medium text-[#1d1d1f]">
+            <Eye className="w-5 h-5 text-gray-400" />
+            <span>{metrics.views} <span className="text-gray-400 font-normal">Vistas</span></span>
+          </div>
+        </div>
+        
+        <div className="flex items-center gap-4">
+          <button
+            onClick={onShare}
+            className="flex items-center gap-2 text-[13px] font-bold text-gray-600 hover:text-blue-600 transition-colors"
+          >
+            <Share2 className="w-4 h-4" />
+            {metrics.shares > 0 && <span>{metrics.shares}</span>}
           </button>
-        </div>
-        <div className="flex gap-4">
-            <a className="text-[13px] font-bold text-blue-600 bg-blue-50 px-4 py-1.5 rounded-full hover:bg-blue-100 transition-colors" href="#">
+          
+          <a className="text-[13px] font-bold text-blue-600 bg-blue-50 px-4 py-1.5 rounded-full hover:bg-blue-100 transition-colors" href="#">
             #{post.categories?.name || 'Contabilidad'}
-        </a>
+          </a>
+          <a className="text-[13px] font-bold text-blue-600 bg-blue-50 px-4 py-1.5 rounded-full hover:bg-blue-100 transition-colors" href="#">
+            #Xtracta
+          </a>
         </div>
-        </div>
+      </div>
     </>
-    );
+  );
 }

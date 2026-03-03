@@ -10,10 +10,9 @@ import copy from 'copy-to-clipboard';
 
 interface PostHeaderProps {
   post: any;
-  viewsCount: number;
 }
 
-export default function PostHeader({ post, viewsCount }: PostHeaderProps) {
+export default function PostHeader({ post }: PostHeaderProps) {
   const [showShareMenu, setShowShareMenu] = useState(false);
 
   const handleShare = (platform: string) => {
@@ -55,7 +54,7 @@ export default function PostHeader({ post, viewsCount }: PostHeaderProps) {
         {/* Metadata */}
         <div className="flex flex-col md:flex-row md:items-center justify-between py-8 border-y border-gray-100 gap-8">
           
-          {/* Autor - EXACTAMENTE COMO SocialFeaturedCard */}
+          {/* Autor */}
           <div className="flex items-center gap-5">
             <div className="w-14 h-14 rounded-full overflow-hidden bg-gray-100 border border-gray-50 shadow-md">
               <img 
