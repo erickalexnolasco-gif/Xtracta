@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { 
   MoreHorizontal, 
   Heart, 
-  MessageCircle, 
+  MessageSquare, 
   Share2, 
   Eye 
 } from 'lucide-react';
@@ -134,7 +134,7 @@ export default function SocialPostCard({ post }: SocialPostCardProps) {
             <span className="text-xs font-bold text-slate-500">{formatNumber(post.likes || 0)}</span>
           </button>
           <button className="flex items-center gap-1.5 text-slate-500 hover:text-blue-600 transition-colors group/btn">
-            <MessageCircle size={18} className="group-hover/btn:fill-blue-500/10" /> 
+            <MessageSquare size={18} className="group-hover/btn:fill-blue-500/10" /> 
             <span className="text-xs font-bold text-slate-500">12</span>
           </button>
           <button className="flex items-center gap-1.5 text-slate-500 hover:text-blue-600 transition-colors">
