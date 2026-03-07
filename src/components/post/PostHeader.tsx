@@ -7,6 +7,7 @@ import {
 import { useState } from 'react';
 import { toast } from 'sonner';
 import copy from 'copy-to-clipboard';
+import { supabase } from '../../lib/supabase';
 
 interface PostHeaderProps {
   post: any;
@@ -14,6 +15,28 @@ interface PostHeaderProps {
 
 export default function PostHeader({ post }: PostHeaderProps) {
   const [showShareMenu, setShowShareMenu] = useState(false);
+
+  // Función para incrementar shares en Supabase
+  const incrementShares = async () => {
+    try {
+      await supabase.rpc('increment_metrics', {
+        target_post_id: post.id,
+        metric_name: 'shares'
+      });
+    } catch (error) {
+      console.error('Error incrementing shares:', error);
+    }
+  };
+
+  const handleShareButtonClick = () => {
+    const wasOpen = showShareMenu;
+    setShowShareMenu(!showShareMenu);
+    
+    // Incrementar shares SOLO al ABRIR el menú (no al cerrar)
+    if (!wasOpen) {
+      incrementShares();
+    }
+  };
 
   const handleShare = (platform: string) => {
     const url = window.location.href;
@@ -101,7 +124,7 @@ export default function PostHeader({ post }: PostHeaderProps) {
               
               <div className="relative">
                 <button 
-                  onClick={() => setShowShareMenu(!showShareMenu)}
+                  onClick={handleShareButtonClick}
                   className="w-10 h-10 flex items-center justify-center rounded-full border border-gray-200 hover:bg-gray-50 transition-all active:scale-95" 
                   title="Compartir"
                 >

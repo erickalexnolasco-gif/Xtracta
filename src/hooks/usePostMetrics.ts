@@ -1,6 +1,6 @@
 // src/hooks/usePostMetrics.ts
-import { useState, useEffect } from 'react';
-import { supabase } from '../lib/supabase';
+import { useState, useEffect } from "react";
+import { supabase } from "../lib/supabase";
 
 interface PostMetrics {
   views: number;
@@ -22,9 +22,9 @@ export function usePostMetrics(postId: string) {
     async function fetchMetrics() {
       try {
         const { data, error } = await supabase
-          .from('posts')
-          .select('views, likes, shares')
-          .eq('id', postId)
+          .from("posts")
+          .select("views, likes, shares")
+          .eq("id", postId)
           .single();
 
         if (error) throw error;
@@ -36,7 +36,7 @@ export function usePostMetrics(postId: string) {
           });
         }
       } catch (error) {
-        console.error('Error fetching metrics:', error);
+        console.error("Error fetching metrics:", error);
       } finally {
         setLoading(false);
       }
@@ -44,24 +44,26 @@ export function usePostMetrics(postId: string) {
 
     if (postId) {
       fetchMetrics();
-      
+      console.log("x");
       // Incrementar views automáticamente al cargar
-      incrementMetric('views');
+      incrementMetric(postId, "views");
     }
 
     // Verificar si el usuario ya dio like (localStorage)
-    const likedPosts = JSON.parse(localStorage.getItem('likedPosts') || '[]');
+    const likedPosts = JSON.parse(localStorage.getItem("likedPosts") || "[]");
     setIsLiked(likedPosts.includes(postId));
   }, [postId]);
 
   // Función para incrementar métricas
-  const incrementMetric = async (metric: 'views' | 'likes' | 'shares') => {
+  const incrementMetric = async (
+    postId: string,
+    metric: "views" | "likes" | "shares",
+  ) => {
     try {
-      const { data, error } = await supabase.rpc('increment_metrics', {
+      const { data, error } = await supabase.rpc("increment_metrics", {
         target_post_id: postId,
         metric_name: metric,
       });
-
       if (error) throw error;
 
       // Actualizar estado local
@@ -79,7 +81,7 @@ export function usePostMetrics(postId: string) {
 
   // Función para dar like
   const toggleLike = async () => {
-    const likedPosts = JSON.parse(localStorage.getItem('likedPosts') || '[]');
+    const likedPosts = JSON.parse(localStorage.getItem("likedPosts") || "[]");
 
     if (isLiked) {
       // Ya dio like, no hacer nada (o implementar "unlike" si quieres)
@@ -87,19 +89,19 @@ export function usePostMetrics(postId: string) {
     }
 
     // Incrementar like
-    const newLikes = await incrementMetric('likes');
-    
+    const newLikes = await incrementMetric(postId, "likes");
+
     if (newLikes !== null) {
       // Guardar en localStorage
       likedPosts.push(postId);
-      localStorage.setItem('likedPosts', JSON.stringify(likedPosts));
+      localStorage.setItem("likedPosts", JSON.stringify(likedPosts));
       setIsLiked(true);
     }
   };
 
   // Función para compartir
   const handleShare = async () => {
-    await incrementMetric('shares');
+    await incrementMetric(postId, "shares");
   };
 
   return {
