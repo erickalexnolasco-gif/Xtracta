@@ -6,7 +6,6 @@ import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
 
 // Layout
-import GoogleOneTap from './components/auth/GoogleOneTap';
 import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
 import ScrollToTop from './components/ui/ScrollToTop';
@@ -38,7 +37,6 @@ function App() {
     <>
       <ScrollToTop />
       <TitleHandler />
-      <GoogleOneTap />
       
       <div className="min-h-screen flex flex-col font-sans">
         <Navbar /> 
