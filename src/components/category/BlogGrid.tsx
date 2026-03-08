@@ -66,7 +66,7 @@ export default function BlogGrid({ selectedCategory, searchQuery }: BlogGridProp
         </div>
       ) : (
         <>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-20">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {currentPosts.map((post, index) => {
               // La primera tarjeta de la página 1 es la destacada (2 columnas)
               if (index === 0 && currentPage === 1) {

@@ -27,7 +27,7 @@ export default function PostContent({ post }: PostContentProps) {
     <>
       {/* Lead/Intro grande ANTES de la imagen */}
       {post.summary && (
-        <p className="text-2xl md:text-3xl text-[#424245] font-normal leading-[1.4] mb-16 tracking-tight serif-body">
+        <p className="text-xl md:text-2xl text-gray-600 font-normal leading-[1.4] mb-16 tracking-tight serif-body">
           {post.summary}
         </p>
       )}

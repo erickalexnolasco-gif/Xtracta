@@ -144,7 +144,7 @@ export default function Post() {
       <ProgressBar progress={readingProgress} />
 
       <div className="bg-white min-h-screen">
-        <div className="max-w-6xl container mx-auto px-3 pt-19 pb-20 grow">
+        <div className="max-w-7xl container mx-auto px-3 pt-19 pb-20 grow">
           
           <PostHeader post={post} />
 

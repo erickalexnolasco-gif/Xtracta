@@ -45,7 +45,7 @@ function App() {
           </Routes>
         ) : (
           // Resto de páginas CON container y padding
-          <main className="container mx-auto px-3 pt-24 pb-20 max-w-6xl grow">
+          <main className="container mx-auto px-3 pt-24 pb-20 max-w-7xl grow">
             <Routes>
               <Route path="/" element={<Category />} />
               <Route path="/home" element={<Landing />} />
