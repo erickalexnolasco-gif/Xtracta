@@ -2,22 +2,34 @@
 import DOMPurify from 'dompurify';
 import { Heart, MessageCircle, Eye, Share2 } from 'lucide-react';
 import { usePostMetrics } from '../../hooks/usePostMetrics';
+import { useAuth } from '../../contexts/AuthContext';
 import { toast } from 'sonner';
+import { useState } from 'react';
+import LoginPrompt from '../auth/LoginPrompt';
 
 interface PostContentProps {
   post: any;
 }
 
 export default function PostContent({ post }: PostContentProps) {
+  const { user } = useAuth();
   const { metrics, isLiked, toggleLike, handleShare } = usePostMetrics(post.id);
+  const [showLoginPrompt, setShowLoginPrompt] = useState(false);
+
+  const onLike = () => {
+    if (!user) {
+      setShowLoginPrompt(true);
+      return;
+    }
+    toggleLike();
+  };
 
   const onShare = async () => {
-    // Copiar link al portapapeles
     const url = window.location.href;
     try {
       await navigator.clipboard.writeText(url);
       toast.success('¡Link copiado!');
-      handleShare(); // Incrementar contador
+      handleShare();
     } catch (error) {
       toast.error('Error al copiar link');
     }
@@ -25,6 +37,12 @@ export default function PostContent({ post }: PostContentProps) {
 
   return (
     <>
+      <LoginPrompt 
+        isOpen={showLoginPrompt}
+        onClose={() => setShowLoginPrompt(false)}
+        message="Inicia sesión para dar like"
+      />
+
       {/* Lead/Intro grande ANTES de la imagen */}
       {post.summary && (
         <p className="text-xl md:text-2xl text-gray-600 font-normal leading-[1.4] mb-16 tracking-tight serif-body">
@@ -58,8 +76,8 @@ export default function PostContent({ post }: PostContentProps) {
       <div className="mt-24 pt-12 border-t border-gray-100 flex flex-wrap items-center justify-between gap-6">
         <div className="flex items-center gap-6">
           <button 
-            onClick={toggleLike}
-            disabled={isLiked}
+            onClick={onLike}
+            disabled={isLiked && !!user}
             className="flex items-center gap-2.5 text-[15px] font-medium text-[#1d1d1f] group disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <Heart 
