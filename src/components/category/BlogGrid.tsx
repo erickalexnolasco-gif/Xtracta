@@ -38,7 +38,7 @@ export default function BlogGrid({ selectedCategory, searchQuery }: BlogGridProp
   }, []);
 
   const filteredPosts = posts.filter(post => {
-    const matchesCategory = selectedCategory === "Todas" || post.category === selectedCategory;
+    const matchesCategory = selectedCategory === "Todas" || post.categories?.name === selectedCategory;
     const matchesSearch = post.title.toLowerCase().includes(searchQuery.toLowerCase());
     return matchesCategory && matchesSearch;
   });

@@ -27,9 +27,9 @@ export default function Footer() {
                   <span className="text-[10px] font-black text-white uppercase tracking-[0.2em]">Potencia tu despacho hoy</span>
                 </div>
 
-                <h2 className="text-5xl md:text-7xl font-bold text-white tracking-tighter leading-[1.02] mb-8" style={{ fontFamily: 'MuseoModerno, sans-serif' }}>
+                <h2 className="text-5xl md:text-7xl font-bold text-white tracking-tighter leading-[1.02] mb-8">
                   El futuro de tu despacho <br />
-                  <span className="bg-linear-to-r from-[#01E7FF] to-[#1819FF] bg-clip-text text-transparent">comienza con Xtracta.</span>
+                  <span className="bg-linear-to-r from-[#01E7FF] to-[#1819FF] bg-clip-text text-transparent">comienza con <span className='font-normal text-5xl md:text-8xl' style={{ fontFamily: 'MuseoModerno, sans-serif' }}>Xtracta.</span></span>
                 </h2>
                 
                 <p className="text-slate-400 text-lg md:text-xl font-medium max-w-xl leading-relaxed">
