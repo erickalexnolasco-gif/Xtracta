@@ -99,9 +99,9 @@ export default function CategoryBar({ selectedCategory, onSelectCategory }: Cate
 
   return (
     <div className="w-full mb-12 relative">
-      {/* Left fade */}
+      {/* Left fade - SOLO EN DESKTOP */}
       {showLeftFade && (
-        <div className="absolute left-0 top-0 bottom-0 w-16 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none" />
+        <div className="hidden md:block absolute left-0 top-0 bottom-0 w-16 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none" />
       )}
 
       {/* Right fade */}
@@ -112,7 +112,7 @@ export default function CategoryBar({ selectedCategory, onSelectCategory }: Cate
       {/* Scrollable container */}
       <div
         ref={scrollRef}
-        className="flex items-center justify-center gap-2 md:gap-4 overflow-x-auto py-4 no-scrollbar scroll-smooth"
+        className="flex items-center justify-start md:justify-center gap-2 md:gap-4 overflow-x-auto py-4 no-scrollbar scroll-smooth px-4 md:px-0"
       >
         {allCategories.map((cat, index) => {
           const isActive = cat.name === selectedCategory;

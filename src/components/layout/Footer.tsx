@@ -24,24 +24,24 @@ export default function Footer() {
                 {/* Badge flotante mejorado */}
                 <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/5 backdrop-blur-md border border-white/10 rounded-full mb-8">
                   <Zap size={16} className="text-blue-400 animate-pulse" />
-                  <span className="text-[10px] font-black text-white uppercase tracking-[0.2em]">Potencia tu despacho hoy</span>
+                  <span className="text-xs md:text-xs font-semibold md:font-bold text-white uppercase tracking-[0.2em]">Potencia tu despacho hoy</span>
                 </div>
 
-                <h2 className="text-5xl md:text-7xl font-bold text-white tracking-tighter leading-[1.02] mb-8">
+                <h2 className="text-5xl md:text-7xl font-medium md:font-bold text-white tracking-tighter leading-[1.02] mb-8">
                   El futuro de tu despacho <br />
-                  <span className="bg-linear-to-r from-[#01E7FF] to-[#1819FF] bg-clip-text text-transparent">comienza con <span className='font-normal text-5xl md:text-8xl' style={{ fontFamily: 'MuseoModerno, sans-serif' }}>Xtracta.</span></span>
+                  <span className="bg-linear-to-r from-[#01E7FF] to-[#1819FF] bg-clip-text text-transparent">comienza con <span className='font-normal text-6xl md:text-8xl' style={{ fontFamily: 'MuseoModerno, sans-serif' }}>Xtracta.</span></span>
                 </h2>
                 
                 <p className="text-slate-400 text-lg md:text-xl font-medium max-w-xl leading-relaxed">
-                  Automatiza lo técnico, domina lo estratégico. La plataforma que procesa miles de XML en segundos con precisión absoluta.
+                  Automatiza lo técnico, domina lo estratégico.<br />La plataforma que procesa miles de XML en segundos con precisión absoluta.
                 </p>
               </div>
 
               <div className="flex flex-col sm:flex-row gap-5 w-full lg:w-auto shrink-0">
-                <button className="bg-white text-black px-10 py-5 rounded-2xl font-bold text-lg hover:bg-blue-600 hover:text-white hover:-translate-y-1 transition-all duration-300 shadow-2xl active:scale-95 flex items-center justify-center gap-3">
+                <button className="bg-white text-black px-10 py-5 rounded-full font-bold text-lg hover:bg-blue-600 hover:text-white hover:-translate-y-1 transition-all duration-300 shadow-2xl active:scale-95 flex items-center justify-center gap-3">
                   Pruébalo gratis <ArrowRight size={20} />
                 </button>
-                <button className="bg-white/5 backdrop-blur-xl text-white border border-white/10 px-10 py-5 rounded-2xl font-bold text-lg hover:bg-white/10 transition-all flex items-center justify-center gap-2">
+                <button className="bg-white/5 backdrop-blur-xl text-white border border-white/10 px-10 py-5 rounded-full font-bold text-lg hover:bg-white/10 transition-all flex items-center justify-center gap-2">
                   Agendar Demo
                 </button>
               </div>

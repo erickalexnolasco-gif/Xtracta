@@ -1,8 +1,8 @@
 // src/components/post/PostHeader.tsx
 import { Link } from 'react-router-dom';
 import { 
-  Clock, Bookmark, Share2, Twitter, Linkedin, 
-  Facebook, MessageCircle, Link2, CheckCircle2 
+  Clock, Bookmark, Share2, Twitter, ChevronRight, Linkedin, 
+  Facebook, MessageCircle, Link2, CheckCircle2 ,
 } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
@@ -64,7 +64,7 @@ export default function PostHeader({ post }: PostHeaderProps) {
       {/* Breadcrumb */}
       <div className="flex items-center gap-2 text-[13px] font-medium text-blue-600 mb-6 tracking-tight">
         <Link to="/" className="hover:underline">Blog</Link>
-        <span className="text-gray-300">/</span>
+        <ChevronRight className='w-4 h-4 text-gray-400' />
         <span>{post.categories.name}</span>
       </div>
 

@@ -304,7 +304,7 @@ export default function XMLConverter() {
   return (
     <div className="min-h-screen" data-testid="xml-converter">
       {/* Main Content */}
-      <div className="max-w-[1200px] mx-auto px-6 pb-40">
+      <div className="max-w-300 mx-auto px-6 pb-40">
         {/* Header */}
         <header className="mb-12 pt-8">
           <h1 className="text-4xl md:text-[48px] font-bold tracking-tight text-[#1d1d1f] mb-2">
@@ -373,7 +373,7 @@ export default function XMLConverter() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -20 }}
-                  className="bg-white rounded-[2rem] border border-gray-100 overflow-hidden shadow-[0_8px_32px_rgba(0,0,0,0.04)]"
+                  className="bg-white rounded-4xl border border-gray-100 overflow-hidden shadow-[0_8px_32px_rgba(0,0,0,0.04)]"
                 >
                   <div className="px-8 py-6 border-b border-gray-50 flex justify-between items-center">
                     <h4 className="font-bold text-[17px] text-[#1d1d1f]">Archivos cargados</h4>
@@ -411,7 +411,7 @@ export default function XMLConverter() {
                             <td className="px-8 py-5">
                               <div className="flex items-center gap-3">
                                 <span className="material-symbols-outlined text-gray-400">description</span>
-                                <span className="text-[14px] font-medium text-[#1d1d1f] truncate max-w-[200px]">
+                                <span className="text-[14px] font-medium text-[#1d1d1f] truncate max-w-50">
                                   {file.fileName}
                                 </span>
                               </div>
@@ -465,7 +465,7 @@ export default function XMLConverter() {
 
           {/* Right Column - Summary */}
           <div className="lg:col-span-4 lg:sticky lg:top-24">
-            <div className="bg-white rounded-[2rem] border border-gray-100 p-8 shadow-[0_8px_32px_rgba(0,0,0,0.04)]">
+            <div className="bg-white rounded-4xl border border-gray-100 p-8 shadow-[0_8px_32px_rgba(0,0,0,0.04)]">
               <h4 className="text-[11px] uppercase tracking-[0.15em] font-bold text-black/90 mb-8 flex items-center gap-2">
                 <span className="w-1.5 h-1.5 bg-[#0071e3] rounded-full" />
                 Resumen de Lote
@@ -528,7 +528,7 @@ export default function XMLConverter() {
             className="fixed bottom-0 left-0 right-0 z-40 py-6 
               bg-white/85 backdrop-blur-xl border-t border-black/5"
           >
-            <div className="max-w-[1200px] mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-6">
+            <div className="max-w-300 mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-6">
               <div className="flex items-center gap-3">
                 <span className="material-symbols-outlined text-green-500">check_circle</span>
                 <p className="text-[14px] font-medium text-[#1d1d1f]">
