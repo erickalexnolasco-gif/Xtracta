@@ -31,7 +31,7 @@ export default function LoginPrompt({ isOpen, onClose, message = 'Inicia sesión
     <>
       {/* Overlay */}
       <div 
-        className="fixed inset-0 bg-black/50 z-50 backdrop-blur-sm"
+        className="fixed inset-0 bg-black/30 z-50 backdrop-blur-xs"
         onClick={onClose}
       />
 
@@ -40,24 +40,24 @@ export default function LoginPrompt({ isOpen, onClose, message = 'Inicia sesión
         <div className="bg-white rounded-3xl shadow-2xl p-8 mx-4">
           <button
             onClick={onClose}
-            className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors"
+            className="rounded-full p-1 absolute top-4 right-8 text-gray-400 hover:text-gray-600 hover:bg-gray-200 transition-colors"
           >
             <X className="w-6 h-6" />
           </button>
 
           <div className="text-center mb-8">
             <h2 className="text-2xl font-bold text-gray-900 mb-2">
-              {message}
+              Inicia sesión <br /> para dar Like y Comentar
             </h2>
             <p className="text-gray-500">
-              Únete a la comunidad de Xtracta
+              Únete a la comunidad de <span className='font-normal' style={{ fontFamily: 'MuseoModerno, sans-serif' }}>Xtracta</span>
             </p>
           </div>
 
           <button
             onClick={handleGoogleSignIn}
             disabled={loading}
-            className="w-full flex items-center justify-center gap-3 bg-white border-2 border-gray-200 rounded-full py-3 px-6 font-semibold text-gray-700 hover:bg-gray-50 hover:border-gray-300 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full flex items-center justify-center gap-3 bg-gray-100 border-2 border-gray-100 rounded-full py-3 px-6 font-semibold text-gray-800 hover:bg-white hover:border-gray-300 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <svg className="w-5 h-5" viewBox="0 0 24 24">
               <path

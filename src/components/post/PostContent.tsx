@@ -2,7 +2,6 @@
 import DOMPurify from 'dompurify';
 import { Heart, MessageCircle, Eye, Share2 } from 'lucide-react';
 import { usePostMetrics } from '../../hooks/usePostMetrics';
-import { useAuth } from '../../contexts/AuthContext';
 import { toast } from 'sonner';
 import { useState } from 'react';
 import LoginPrompt from '../auth/LoginPrompt';
@@ -12,16 +11,23 @@ interface PostContentProps {
 }
 
 export default function PostContent({ post }: PostContentProps) {
-  const { user } = useAuth();
-  const { metrics, isLiked, toggleLike, handleShare } = usePostMetrics(post.id);
+  const { metrics, isLiked, toggleLike, handleShare, isLoggedIn } = usePostMetrics(post.id);
   const [showLoginPrompt, setShowLoginPrompt] = useState(false);
 
-  const onLike = () => {
-    if (!user) {
+  const onLike = async () => {
+    const success = await toggleLike();
+    if (!success) {
+      setShowLoginPrompt(true);
+    }
+  };
+
+  const onComment = () => {
+    if (!isLoggedIn) {
       setShowLoginPrompt(true);
       return;
     }
-    toggleLike();
+    // Aquí iría la lógica de comentarios
+    toast.info('Función de comentarios próximamente');
   };
 
   const onShare = async () => {
@@ -40,7 +46,6 @@ export default function PostContent({ post }: PostContentProps) {
       <LoginPrompt 
         isOpen={showLoginPrompt}
         onClose={() => setShowLoginPrompt(false)}
-        message="Inicia sesión para dar like"
       />
 
       {/* Lead/Intro grande ANTES de la imagen */}
@@ -77,11 +82,10 @@ export default function PostContent({ post }: PostContentProps) {
         <div className="flex items-center gap-6">
           <button 
             onClick={onLike}
-            disabled={isLiked && !!user}
-            className="flex items-center gap-2.5 text-[15px] font-medium text-[#1d1d1f] group disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex items-center gap-2.5 text-[15px] font-medium text-[#1d1d1f] group hover:scale-105 transition-transform"
           >
             <Heart 
-              className={`w-5 h-5 transition-colors ${
+              className={`w-5 h-5 transition-all ${
                 isLiked 
                   ? 'text-red-500 fill-red-500' 
                   : 'text-gray-400 group-hover:text-red-500'
@@ -90,7 +94,10 @@ export default function PostContent({ post }: PostContentProps) {
             <span>{metrics.likes} <span className="text-gray-400 font-normal">Likes</span></span>
           </button>
           
-          <button className="flex items-center gap-2.5 text-[15px] font-medium text-[#1d1d1f] group">
+          <button 
+            onClick={onComment}
+            className="flex items-center gap-2.5 text-[15px] font-medium text-[#1d1d1f] group hover:scale-105 transition-transform"
+          >
             <MessageCircle className="w-5 h-5 text-gray-400 group-hover:text-blue-500 transition-colors" />
             <span>18 <span className="text-gray-400 font-normal">Comentarios</span></span>
           </button>

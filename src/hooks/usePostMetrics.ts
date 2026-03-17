@@ -1,6 +1,7 @@
 // src/hooks/usePostMetrics.ts
 import { useState, useEffect } from "react";
 import { supabase } from "../lib/supabase";
+import { useAuth } from "../contexts/AuthContext";
 
 interface PostMetrics {
   views: number;
@@ -9,6 +10,7 @@ interface PostMetrics {
 }
 
 export function usePostMetrics(postId: string) {
+  const { user } = useAuth();
   const [metrics, setMetrics] = useState<PostMetrics>({
     views: 0,
     likes: 0,
@@ -44,15 +46,34 @@ export function usePostMetrics(postId: string) {
 
     if (postId) {
       fetchMetrics();
-      console.log("x");
-      // Incrementar views automáticamente al cargar
       incrementMetric(postId, "views");
     }
 
-    // Verificar si el usuario ya dio like (localStorage)
-    const likedPosts = JSON.parse(localStorage.getItem("likedPosts") || "[]");
-    setIsLiked(likedPosts.includes(postId));
-  }, [postId]);
+    // Verificar si el usuario ya dio like EN SUPABASE (no localStorage)
+    if (user) {
+      checkIfLiked();
+    }
+  }, [postId, user]);
+
+  // Verificar si el usuario ya dio like
+  const checkIfLiked = async () => {
+    if (!user) return;
+
+    try {
+      const { data, error } = await supabase
+        .from("post_likes")
+        .select("id")
+        .eq("post_id", postId)
+        .eq("user_id", user.id)
+        .single();
+
+      if (!error && data) {
+        setIsLiked(true);
+      }
+    } catch (error) {
+      // No existe el like, está bien
+    }
+  };
 
   // Función para incrementar métricas
   const incrementMetric = async (
@@ -66,7 +87,6 @@ export function usePostMetrics(postId: string) {
       });
       if (error) throw error;
 
-      // Actualizar estado local
       setMetrics((prev) => ({
         ...prev,
         [metric]: data || prev[metric] + 1,
@@ -79,23 +99,80 @@ export function usePostMetrics(postId: string) {
     }
   };
 
-  // Función para dar like
-  const toggleLike = async () => {
-    const likedPosts = JSON.parse(localStorage.getItem("likedPosts") || "[]");
+  // Función para dar like (SOLO SI ESTÁ LOGUEADO)
+const toggleLike = async (): Promise<boolean> => {
+  if (!user) {
+    // Usuario no logueado - retornar false
+    return false;
+  }
 
+  try {
     if (isLiked) {
-      // Ya dio like, no hacer nada (o implementar "unlike" si quieres)
-      return;
+      // Ya dio like, quitar like
+      await removeLike();
+    } else {
+      // Dar like
+      await addLike();
     }
+    return true;
+  } catch (error) {
+    console.error('Error toggling like:', error);
+    return false;
+  }
+};
 
-    // Incrementar like
-    const newLikes = await incrementMetric(postId, "likes");
+  // Agregar like a Supabase
+  const addLike = async () => {
+    if (!user) return;
 
-    if (newLikes !== null) {
-      // Guardar en localStorage
-      likedPosts.push(postId);
-      localStorage.setItem("likedPosts", JSON.stringify(likedPosts));
+    try {
+      // Insertar en tabla post_likes
+      const { error: likeError } = await supabase
+        .from("post_likes")
+        .insert({
+          user_id: user.id,
+          post_id: postId,
+        });
+
+      if (likeError) throw likeError;
+
+      // Incrementar contador
+      await incrementMetric(postId, "likes");
       setIsLiked(true);
+    } catch (error) {
+      console.error("Error adding like:", error);
+    }
+  };
+
+  // Quitar like de Supabase
+  const removeLike = async () => {
+    if (!user) return;
+
+    try {
+      // Eliminar de tabla post_likes
+      const { error: deleteError } = await supabase
+        .from("post_likes")
+        .delete()
+        .eq("user_id", user.id)
+        .eq("post_id", postId);
+
+      if (deleteError) throw deleteError;
+
+      // Decrementar contador manualmente
+      setMetrics((prev) => ({
+        ...prev,
+        likes: Math.max(0, prev.likes - 1),
+      }));
+
+      setIsLiked(false);
+
+      // Actualizar en la tabla posts
+      await supabase
+        .from("posts")
+        .update({ likes: Math.max(0, metrics.likes - 1) })
+        .eq("id", postId);
+    } catch (error) {
+      console.error("Error removing like:", error);
     }
   };
 
@@ -110,5 +187,6 @@ export function usePostMetrics(postId: string) {
     isLiked,
     toggleLike,
     handleShare,
+    isLoggedIn: !!user,
   };
 }

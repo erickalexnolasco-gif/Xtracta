@@ -1,10 +1,25 @@
 // src/components/auth/UserDropdown.tsx
 import { useState, useRef, useEffect } from 'react';
-import { motion, AnimatePresence, type Variants } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../../contexts/AuthContext';
+import { useIsAdmin } from '../../hooks/useIsAdmin';
+import { useNavigate } from 'react-router-dom';
+import { 
+  User, 
+  Settings, 
+  Heart, 
+  Bookmark, 
+  LayoutDashboard, 
+  HelpCircle, 
+  LogOut,
+  ChevronDown,
+  PenSquare
+} from 'lucide-react';
 
 export default function UserDropdown() {
   const { user, signOut } = useAuth();
+  const isAdmin = useIsAdmin();
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -24,130 +39,119 @@ export default function UserDropdown() {
   const userName = user.user_metadata?.full_name || user.email?.split('@')[0];
   const userEmail = user.email;
 
-  // Configuración de items usando Material Symbols para consistencia
   const menuItems = [
-    { icon: 'dashboard', label: 'Mi Dashboard', href: '#', color: 'text-blue-500' },
-    { icon: 'bookmark', label: 'Posts Guardados', href: '#', color: 'text-indigo-500' },
-    { icon: 'favorite', label: 'Posts con Like', href: '#', color: 'text-rose-500' },
-    { icon: 'settings', label: 'Configuración', href: '#', color: 'text-slate-500' },
-    { icon: 'help', label: 'Ayuda y Soporte', href: '#', color: 'text-emerald-500' },
+    { icon: LayoutDashboard, label: 'Mi Dashboard', href: '#', color: 'text-blue-600' },
+    { icon: Bookmark, label: 'Posts Guardados', href: '#', color: 'text-purple-600' },
+    { icon: Heart, label: 'Posts con Like', href: '#', color: 'text-red-600' },
+    { icon: Settings, label: 'Configuración', href: '#', color: 'text-gray-600' },
+    { icon: HelpCircle, label: 'Ayuda', href: '#', color: 'text-green-600' },
   ];
-
-  // Animaciones estilo "Spring" (Muelle) de macOS
-  const dropdownVariants: Variants = {
-    hidden: { 
-      opacity: 0, 
-      scale: 0.92,
-      y: -10,
-      filter: 'blur(10px)' 
-    },
-    visible: { 
-      opacity: 1, 
-      scale: 1,
-      y: 0,
-      filter: 'blur(0px)',
-      transition: {
-        type: 'spring',
-        stiffness: 300,
-        damping: 25,
-        staggerChildren: 0.05
-      }
-    },
-    exit: { 
-      opacity: 0, 
-      scale: 0.95,
-      transition: { duration: 0.15 } 
-    }
-  };
-
-  const itemVariants: Variants = {
-    hidden: { opacity: 0, x: -5 },
-    visible: { opacity: 1, x: 0 }
-  };
 
   return (
     <div className="relative" ref={dropdownRef}>
-      {/* TRIGGER BUTTON: Estilo limpio de barra de estado */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 px-1 py-1 pr-3 rounded-full hover:bg-black/5 transition-colors duration-200 active:scale-95"
+        className="flex items-center gap-2 hover:bg-gray-100 rounded-full transition-all p-1 pr-3"
       >
-        <div className="relative">
-          {avatarUrl ? (
-            <img 
-              src={avatarUrl} 
-              alt={userName}
-              className="w-8 h-8 rounded-full border border-black/10 object-cover shadow-sm"
-            />
-          ) : (
-            <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-[#1819FF] to-[#01E7FF] flex items-center justify-center border border-black/10">
-              <span className="material-symbols-outlined text-white text-lg">person</span>
-            </div>
-          )}
-          {/* Indicador de estado Apple */}
-          <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-emerald-500 border-2 border-white rounded-full"></div>
-        </div>
-        <span className={`material-symbols-outlined text-[#86868b] text-base transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}>
-          expand_more
-        </span>
+        {avatarUrl ? (
+          <img 
+            src={avatarUrl} 
+            alt={userName}
+            className="w-8 h-8 rounded-full border-2 border-gray-200 object-cover"
+          />
+        ) : (
+          <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center border-2 border-gray-200">
+            <User size={16} className="text-white" />
+          </div>
+        )}
+        <ChevronDown 
+          size={16} 
+          className={`text-gray-500 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
+        />
       </button>
 
-      {/* DROPDOWN: Estilo Glassmorphism macOS */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            variants={dropdownVariants}
-            initial="hidden"
-            animate="visible"
-            exit="exit"
-            className="absolute right-0 mt-3 w-72 bg-white/70 backdrop-blur-2xl rounded-[1.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-white/40 ring-1 ring-black/5 overflow-hidden z-[100]"
+            initial={{ opacity: 0, y: -10, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -10, scale: 0.95 }}
+            transition={{ duration: 0.15, ease: [0.4, 0, 0.2, 1] }}
+            className="absolute right-0 mt-2 w-72 bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden z-50"
           >
-            {/* USER PROFILE INFO */}
-            <div className="p-5 flex flex-col items-center text-center border-b border-black/[0.03]">
-              {avatarUrl ? (
-                <img src={avatarUrl} alt={userName} className="w-16 h-16 rounded-full shadow-xl border-2 border-white mb-3" />
-              ) : (
-                <div className="w-16 h-16 rounded-full bg-slate-100 flex items-center justify-center mb-3">
-                  <span className="material-symbols-outlined text-3xl text-slate-400">person</span>
+            {/* User Info Header */}
+            <div className="px-4 py-4 bg-gradient-to-br from-blue-50 to-white border-b border-gray-100">
+              <div className="flex items-center gap-3">
+                {avatarUrl ? (
+                  <img 
+                    src={avatarUrl} 
+                    alt={userName}
+                    className="w-12 h-12 rounded-full border-2 border-white shadow-md object-cover"
+                  />
+                ) : (
+                  <div className="w-12 h-12 rounded-full bg-blue-500 flex items-center justify-center border-2 border-white shadow-md">
+                    <User size={20} className="text-white" />
+                  </div>
+                )}
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-bold text-gray-900 truncate">{userName}</p>
+                  <p className="text-xs text-gray-500 truncate">{userEmail}</p>
+                  {isAdmin && (
+                    <span className="inline-block mt-1 text-[10px] font-bold bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full">
+                      ADMIN
+                    </span>
+                  )}
                 </div>
-              )}
-              <h3 className="text-[15px] font-bold text-[#1d1d1f] tracking-tight leading-tight">{userName}</h3>
-              <p className="text-[12px] text-[#86868b] font-medium">{userEmail}</p>
+              </div>
             </div>
 
-            {/* MENU LINKS */}
-            <div className="p-1.5">
-              {menuItems.map((item) => (
+            {/* BOTÓN PUBLICAR POST - SOLO ADMINS */}
+            {isAdmin && (
+              <div className="p-2 border-b border-gray-100">
+                <button
+                  onClick={() => {
+                    navigate('/admin/posts');
+                    setIsOpen(false);
+                  }}
+                  className="w-full flex items-center gap-3 px-4 py-3 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white rounded-xl transition-all shadow-md hover:shadow-lg"
+                >
+                  <PenSquare size={18} />
+                  <span className="text-sm font-bold">Publicar Post</span>
+                </button>
+              </div>
+            )}
+
+            {/* Menu Items */}
+            <div className="py-2">
+              {menuItems.map((item, index) => (
                 <motion.a
                   key={item.label}
                   href={item.href}
-                  variants={itemVariants}
-                  className="flex items-center gap-3 px-3.5 py-2.5 rounded-[0.8rem] hover:bg-black/[0.04] active:bg-black/[0.08] transition-colors group"
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: index * 0.03 }}
+                  className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors group"
                   onClick={() => setIsOpen(false)}
                 >
-                  <span className={`material-symbols-outlined ${item.color} group-hover:scale-110 transition-transform duration-300 !text-[22px]`}>
-                    {item.icon}
-                  </span>
-                  <span className="text-[13px] font-semibold text-[#1d1d1f]">
+                  <item.icon size={18} className={`${item.color} group-hover:scale-110 transition-transform`} />
+                  <span className="text-sm font-medium text-gray-700 group-hover:text-gray-900">
                     {item.label}
                   </span>
                 </motion.a>
               ))}
             </div>
 
-            {/* LOGOUT SECTION */}
-            <div className="p-1.5 bg-black/[0.02] border-t border-black/[0.03]">
+            {/* Logout Button */}
+            <div className="border-t border-gray-100">
               <button
                 onClick={() => {
                   signOut();
                   setIsOpen(false);
                 }}
-                className="w-full flex items-center gap-3 px-3.5 py-3 rounded-[0.8rem] hover:bg-red-500/10 transition-colors group"
+                className="w-full flex items-center gap-3 px-4 py-3 hover:bg-red-50 transition-colors group"
               >
-                <span className="material-symbols-outlined text-red-500 group-hover:scale-110 transition-transform duration-300 !text-[22px]">
-                  logout
-                </span>
-                <span className="text-[13px] font-bold text-red-600">
+                <LogOut size={18} className="text-red-600 group-hover:scale-110 transition-transform" />
+                <span className="text-sm font-bold text-red-600 group-hover:text-red-700">
                   Cerrar sesión
                 </span>
               </button>
