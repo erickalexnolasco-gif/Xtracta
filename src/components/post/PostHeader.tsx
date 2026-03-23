@@ -1,17 +1,31 @@
 // src/components/post/PostHeader.tsx
 import { Link } from 'react-router-dom';
 import { 
-  Clock, Bookmark, Share2, Twitter, ChevronRight, Linkedin, 
-  Facebook, MessageCircle, Link2, CheckCircle2 ,
+  Clock, Bookmark, Share2, Twitter, ChevronLeft ,ChevronRight, Sparkles ,Linkedin, 
+  Facebook, MessageCircle, Link2, CheckCircle2, Zap ,
 } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 import copy from 'copy-to-clipboard';
 import { supabase } from '../../lib/supabase';
+import { motion } from 'framer-motion';
 
 interface PostHeaderProps {
   post: any;
 }
+
+const InstagramVerified = () => (
+    <svg 
+      viewBox="0 0 40 40" 
+      className="size-3.25 md:size-3.75 fill-blue-500 shrink-0" 
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path 
+        d="M19.998 3.094 14.638 0l-2.972 5.15H5.432v6.354L0 14.64 3.094 20 0 25.359l5.432 3.137v5.905h5.975L14.638 40l5.36-3.094L25.358 40l3.232-5.6h6.162v-6.01L40 25.359 36.905 20 40 14.641l-5.248-3.03v-6.46h-6.419L25.358 0l-5.36 3.094Zm7.415 11.225 2.254 2.287-11.43 11.5-6.835-6.93 2.244-2.258 4.587 4.581 9.18-9.18Z" 
+        fillRule="evenodd"
+      />
+    </svg>
+  );
 
 export default function PostHeader({ post }: PostHeaderProps) {
   const [showShareMenu, setShowShareMenu] = useState(false);
@@ -62,24 +76,33 @@ export default function PostHeader({ post }: PostHeaderProps) {
   return (
     <>
       {/* Breadcrumb */}
-      <div className="flex items-center gap-2 text-[13px] font-medium text-blue-600 mb-6 tracking-tight">
-        <Link to="/" className="hover:underline">Blog</Link>
-        <ChevronRight className='w-4 h-4 text-gray-400' />
-        <span>{post.categories.name}</span>
+      <div className="flex items-center gap-2 text-xs md:text-sm font-medium text-gray-400 hover:text-blue-600 mb-4 md:mb-6 tracking-tight ">
+        <Link to="/" className="flex items-center gap-1 group">
+        <ChevronLeft className='w-4 h-4 group-hover:-translate-x-1 transition-transform duration-200' />
+        <span>Volver al Blog</span>
+        </Link>
       </div>
 
-      <header className="mb-16">
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
+          className="inline-flex items-center gap-1.5 px-2 py-1 md:px-3 md:py-1.5 bg-blue-50/80 backdrop-blur-xl border border-blue-100 rounded-full mb-3 sm:mb-4">
+          <Zap className="w-3 h-3 md:w-4 md:h-4 text-blue-600" />
+          <span className="text-[10px] md:text-xs font-semibold text-blue-600 uppercase tracking-[0.12em]">{post.categories.name}</span>
+      </motion.div>
+
+      <header className="mb-8 md:mb-16">
         {/* Título */}
-        <h1 className="text-[32px] md:text-[48px] lg:text-[64px] font-bold tracking-tight leading-[1.1] mb-12 max-w-6xl text-[#1d1d1f]">
+        <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
+          className="text-[32px] md:text-[48px] lg:text-[64px] font-bold tracking-tight leading-[1.1] mb-6 md:mb-10 max-w-6xl text-[#1d1d1f]">
           {post.title}
-        </h1>
+        </motion.h1>
 
         {/* Metadata */}
         <div className="flex flex-col md:flex-row md:items-center justify-between py-8 border-y border-gray-100 gap-8">
           
           {/* Autor */}
-          <div className="flex items-center gap-5">
-            <div className="w-14 h-14 rounded-full overflow-hidden bg-gray-100 border border-gray-50 shadow-md">
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
+            className="flex items-center gap-3 md:gap-5">
+            <div className="w-12 h-12 md:w-14 md:h-14 rounded-full overflow-hidden bg-gray-100 border border-gray-50 shadow-md">
               <img 
                 src={`https://i.pravatar.cc/150?u=${post.authors.name}`}
                 alt={post.authors.name}
@@ -89,9 +112,8 @@ export default function PostHeader({ post }: PostHeaderProps) {
             <div>
               <div className="flex items-center gap-2 mb-0.5">
                 <span className="text-[13px] lg:text-[15px] font-bold text-[#1d1d1f]">
-                  {post.authors.name}
-                </span>
-                <CheckCircle2 className="w-4 h-4 text-blue-500 fill-blue-500" />
+                  {post.authors.name} </span>
+                <InstagramVerified />
               </div>
               <p className="text-[11px] lg:text-[13px] text-[#86868b] font-medium">
                 @{post.authors.username?.toLowerCase().replace(" ", "")} • {new Date(post.published_at).toLocaleDateString('es-MX', { 
@@ -101,10 +123,11 @@ export default function PostHeader({ post }: PostHeaderProps) {
                 })}
               </p>
             </div>
-          </div>
+          </motion.div>
 
           {/* Acciones */}
-          <div className="flex items-center gap-3">
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
+            className="flex items-center gap-3">
             {/* Badge de lectura */}
             <div className="flex items-center px-4 py-2 bg-[#f5f5f7] rounded-full text-[13px] font-medium text-[#1d1d1f]">
               <Clock className="w-4.5 h-4.5 mr-2" />
@@ -179,7 +202,7 @@ export default function PostHeader({ post }: PostHeaderProps) {
                 )}
               </div>
             </div>
-          </div>
+          </motion.div>
         </div>
       </header>
     </>

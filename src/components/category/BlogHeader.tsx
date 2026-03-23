@@ -6,21 +6,21 @@ export default function BlogHeader({ onSearch }: { onSearch: (val: string) => vo
   return (
     <div className="text-center pb-8 space-y-2 md:space-y-4">
       {/* Cambiado de font-black a font-bold y tracking-tight */}
-      <motion.h1 initial={{ opacity: 0, y: 10 }}
+      <motion.h1 initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3 }}
         className="text-5xl md:text-7xl font-light text-gray-900 tracking-tight" style={{ fontFamily: 'MuseoModerno, sans-serif' }} >Xtracta
         <span className="text-blue-600 text-4xl md:text-5xl font-normal"> blog</span>
       </motion.h1>
-      <motion.p initial={{ opacity: 0, y: 10 }}
+      <motion.p initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.1 }} className="text-md md:text-xl text-gray-400 max-w-2xl mx-auto font-normal">
+        transition={{ delay: 0.1 }} 
+        className="text-md md:text-xl text-gray-400 max-w-2xl mx-auto font-normal">
         Pasión por la contabilidad inteligente y la tecnología.
       </motion.p>
 
-      <motion.div initial={{ opacity: 0, y: 10 }}
+      <motion.div initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.2 }} className="max-w-2xl mx-auto px-6 md:px-0 pt-6 relative">
+        transition={{ delay: 0.2 }} className="max-w-2xl mx-auto px-6 md:px-0 pt-6 relative">
         <div className="relative flex items-center group">
             <Search className="absolute left-4 text-gray-400 group-hover:text-blue-600 w-5 h-5 group-focus-within:text-blue-600 transition-colors" />
             <input 

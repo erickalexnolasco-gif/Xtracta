@@ -50,17 +50,17 @@ export default function PostContent({ post }: PostContentProps) {
 
       {/* Lead/Intro grande ANTES de la imagen */}
       {post.summary && (
-        <p className="text-xl md:text-2xl text-gray-600 font-normal leading-[1.4] mb-16 tracking-tight serif-body">
+        <p className="text-[17px] md:text-2xl text-gray-500 font-medium leading-[1.4] mb-8 md:mb-16 tracking-tight">
           {post.summary}
         </p>
       )}
 
       {/* Imagen destacada con caption */}
       {post.image_url && (
-        <figure className="mb-16 -mx-6 lg:mx-0">
+        <figure className="mb-8 sm:mb-12 md:mb-16">
           <img 
             alt={post.title}
-            className="rounded-[2.5rem] w-full h-auto object-cover aspect-video shadow-2xl" 
+            className="rounded-2xl w-full h-auto object-cover aspect-video shadow-[0_8px_30px_rgba(0,0,0,0.08)] border border-black/[0.06]" 
             src={post.image_url}
           />
           <figcaption className="text-[13px] text-center mt-6 text-[#86868b] font-sans italic">

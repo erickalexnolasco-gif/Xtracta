@@ -101,12 +101,12 @@ export default function CategoryBar({ selectedCategory, onSelectCategory }: Cate
     <div className="w-full mb-12 relative">
       {/* Left fade - SOLO EN DESKTOP */}
       {showLeftFade && (
-        <div className="hidden md:block absolute left-0 top-0 bottom-0 w-16 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none" />
+        <div className="hidden md:block absolute left-0 top-0 bottom-0 w-16 bg-linear-to-r from-white to-transparent z-10 pointer-events-none" />
       )}
 
       {/* Right fade */}
       {showRightFade && (
-        <div className="absolute right-0 top-0 bottom-0 w-16 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none" />
+        <div className="absolute right-0 top-0 bottom-0 w-16 bg-linear-to-l from-white to-transparent z-10 pointer-events-none" />
       )}
 
       {/* Scrollable container */}
@@ -124,7 +124,7 @@ export default function CategoryBar({ selectedCategory, onSelectCategory }: Cate
               onClick={() => onSelectCategory(cat.name)}
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.03 }}
+              transition={{ delay: index * 0.05 }}
               className={`
                 text-sm font-semibold whitespace-nowrap px-6 py-2 rounded-full 
                 transition-all duration-300 ease-out shrink-0

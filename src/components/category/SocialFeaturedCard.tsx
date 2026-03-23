@@ -7,6 +7,7 @@ import {
   Eye,
   MessageSquare
 } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 interface PostProps {
   post: {
@@ -61,7 +62,7 @@ export default function SocialFeaturedCard({ post }: PostProps) {
   const InstagramVerified = () => (
     <svg 
       viewBox="0 0 40 40" 
-      className="size-3.75 fill-blue-500 shrink-0" 
+      className="size-3.25 md:size-3.75 fill-blue-500 shrink-0" 
       xmlns="http://www.w3.org/2000/svg"
     >
       <path 
@@ -72,12 +73,12 @@ export default function SocialFeaturedCard({ post }: PostProps) {
   );
 
   return (
-    <article className="col-span-1 md:col-span-2 lg:col-span-3 bg-white rounded-2xl border border-slate-100 shadow-sm flex flex-col p-6 lg:p-7 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-slate-200/50 group">
+    <motion.article initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="col-span-1 md:col-span-2 lg:col-span-3 bg-white rounded-3xl border border-slate-100 shadow-sm flex flex-col p-4 lg:p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-slate-200/50 group">
       
       {/* HEADER: INFO DEL AUTOR */}
       <div className="flex items-start justify-between mb-5">
         <div className="flex items-center gap-4">
-          <div className="size-11 rounded-full bg-slate-100 border border-slate-100 overflow-hidden shrink-0">
+          <div className="size-9 md:size-12 rounded-full bg-slate-100 border border-slate-100 overflow-hidden shrink-0">
             <img 
               src={`https://i.pravatar.cc/150?u=${post.authors.name}`} 
               alt={post.authors.name} 
@@ -86,10 +87,10 @@ export default function SocialFeaturedCard({ post }: PostProps) {
           </div>
           <div className="flex flex-col">
             <div className="flex items-center gap-1.5">
-              <h4 className="text-base font-bold text-slate-900 leading-none">{post.authors.name}</h4>
+              <h4 className="text-sm md:text-base font-bold text-slate-900 leading-none">{post.authors.name}</h4>
               <InstagramVerified />
             </div>
-            <p className="text-sm text-slate-400 font-medium mt-1">
+            <p className="text-xs md:text-sm text-slate-400 font-medium mt-1">
               @{post.authors.username?.toLowerCase().replace(/\s+/g, '')} • {getRelativeTime(post.published_at)}
             </p>
           </div>
@@ -100,26 +101,26 @@ export default function SocialFeaturedCard({ post }: PostProps) {
       </div>
 
       {/* BODY: GRID DE 2 COLUMNAS (Texto e Imagen) */}
-      <div className="flex flex-col lg:grid lg:grid-cols-2 gap-8 items-start mb-6">
+      <div className="flex flex-col lg:grid lg:grid-cols-2 gap-5 items-start mb-4 md:mb-6">
         <div className="flex flex-col space-y-4">
           <Link to={`/post/${post.id}`}>
-            <h2 className="text-slate-900 text-2xl lg:text-4xl font-bold leading-[1.1] tracking-tight group-hover:text-blue-600 transition-colors">
+            <h2 className="text-slate-900 text-xl md:text-2xl lg:text-4xl font-bold  leading-[1.1] tracking-tight group-hover:text-blue-600 transition-colors">
               {post.title}
             </h2>
           </Link>
-          <p className="text-slate-600 text-xl leading-[1.3] line-clamp-3 font-normal">
+          <p className="text-slate-600 text-md md:text-xl leading-[1.3] line-clamp-2 md:line-clamp-3 font-normal">
             {post.summary}
           </p>
-          <div className="flex flex-wrap gap-2 pt-2">
-            <span className="text-blue-600 text-base font-bold hover:underline cursor-pointer tracking-wider">
-              #{post.categories.name.replace(/\s+/g, '')}
-            </span>
-          </div>
+          <div className="flex flex-wrap gap-1.5">
+              <span className="text-blue-600 text-xs md:text-sm font-semibold hover:underline cursor-pointer bg-blue-50/50 px-2 py-0.5 rounded-md">
+                #{post.categories.name.replace(/\s+/g, '')}
+              </span>
+            </div>
         </div>
 
         {/* CONTENEDOR DE IMAGEN */}
         <Link to={`/post/${post.id}`} className="w-full">
-          <div className="w-full aspect-video rounded-xl overflow-hidden border border-slate-50 shadow-inner relative">
+          <div className="w-full aspect-video rounded-2xl overflow-hidden border border-slate-50 shadow-inner relative">
             <img 
               src={post.image_url} 
               alt={post.title} 
@@ -130,26 +131,26 @@ export default function SocialFeaturedCard({ post }: PostProps) {
       </div>
 
       {/* FOOTER: ACCIONES SOCIALES CON MÉTRICAS REALES */}
-      <div className="mt-auto pt-5 border-t border-slate-100 flex items-center justify-between">
-        <div className="flex items-center gap-8">
-          <button className="flex items-center gap-2 text-slate-500 hover:text-red-500 transition-colors group/btn">
-            <Heart size={20} className="group-hover/btn:fill-red-500/10" />
+      <div className="mt-auto pt-3 border-t border-black/[0.06] flex items-center justify-between">
+        <div className="flex items-center gap-3 md:gap-5">
+          <button className="flex items-center gap-1 md:gap-2 text-slate-500 hover:text-red-500 transition-colors group/btn">
+            <Heart size={16} className="group-hover/btn:fill-red-500/10" />
             <span className="text-xs font-bold">{formatNumber(post.likes || 0)}</span>
           </button>
-          <button className="flex items-center gap-2 text-slate-500 hover:text-blue-600 transition-colors group/btn">
-            <MessageSquare size={20} className="group-hover/btn:fill-blue-600/10" />
+          <button className="flex items-center gap-1 md:gap-2 text-slate-500 hover:text-blue-600 transition-colors group/btn">
+            <MessageSquare size={16} className="group-hover/btn:fill-blue-600/10" />
             <span className="text-xs font-bold">18</span>
           </button>
-          <button className="flex items-center gap-2 text-slate-500 hover:text-blue-600 transition-colors">
-            <Share2 size={20} />
+          <button className="flex items-center gap-1 md:gap-2 text-slate-500 hover:text-blue-600 transition-colors">
+            <Share2 size={16} />
             <span className="text-xs font-bold">{formatNumber(post.shares || 0)}</span>
           </button>
         </div>
-        <div className="flex items-center gap-2 text-slate-500">
-          <Eye size={20} />
-          <span className="text-xs font-bold tracking-widest">{formatNumber(post.views || 0)} Vistas</span>
+        <div className="flex items-center gap-1 md:gap-2 text-slate-500">
+          <Eye size={16} />
+          <span className="text-xs font-bold">{formatNumber(post.views || 0)} Vistas</span>
         </div>
       </div>
-    </article>
+    </motion.article>
   );
 }
