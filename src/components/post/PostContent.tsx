@@ -60,7 +60,7 @@ export default function PostContent({ post }: PostContentProps) {
         <figure className="mb-8 sm:mb-12 md:mb-16">
           <img 
             alt={post.title}
-            className="rounded-2xl w-full h-auto object-cover aspect-video shadow-[0_8px_30px_rgba(0,0,0,0.08)] border border-black/[0.06]" 
+            className="rounded-2xl w-full h-auto object-cover aspect-video shadow-[0_8px_30px_rgba(0,0,0,0.08)] border border-black/6" 
             src={post.image_url}
           />
           <figcaption className="text-[13px] text-center mt-6 text-[#86868b] font-sans italic">

@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   ArrowLeft, Save, Calendar as CalendarIcon, Send, 
   Upload, Image as ImageIcon, Copy, Check, Plus,
-  Bold, Italic, Underline, Link as LinkIcon, Code, Heading1, Heading2
+  Bold, Italic, Underline, Link as LinkIcon
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
@@ -203,7 +203,7 @@ export default function AdminDashboard({ onClose }: { onClose: () => void }) {
   return (
     <motion.div 
       initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-      className="fixed inset-0 z-[9999] bg-[#F5F5F7] flex flex-col overflow-hidden text-[#1D1D1F]"
+      className="fixed inset-0 z-9999 bg-[#F5F5F7] flex flex-col overflow-hidden text-[#1D1D1F]"
     >
       {/* HEADER BAR */}
       <div className="h-14 border-b border-black/10 bg-white/70 backdrop-blur-xl flex items-center justify-between px-6 shrink-0">
@@ -237,7 +237,7 @@ export default function AdminDashboard({ onClose }: { onClose: () => void }) {
                   />
                   <textarea 
                     placeholder="Resumen breve o extracto (Aparecerá en las tarjetas y al inicio del post)…" value={summary} onChange={(e) => setSummary(e.target.value)}
-                    className="w-full min-h-[60px] text-[15px] border-0 p-0 focus:outline-none resize-none placeholder:text-[#6E6E73] bg-transparent"
+                    className="w-full min-h-15 text-[15px] border-0 p-0 focus:outline-none resize-none placeholder:text-[#6E6E73] bg-transparent"
                   />
                   
                   {/* TOOLBAR HTML FUNCIONAL */}
@@ -259,7 +259,7 @@ export default function AdminDashboard({ onClose }: { onClose: () => void }) {
                     ref={textareaRef}
                     placeholder="Escribe el contenido HTML aquí. Usa la barra de herramientas para agregar <h2> (necesario para el índice), párrafos y negritas..." 
                     value={content} onChange={(e) => setContent(e.target.value)}
-                    className="w-full min-h-[500px] text-[15px] border-0 p-0 focus:outline-none resize-none font-mono bg-transparent text-gray-700 leading-relaxed"
+                    className="w-full min-h-125 text-[15px] border-0 p-0 focus:outline-none resize-none font-mono bg-transparent text-gray-700 leading-relaxed"
                   />
                 </div>
               </div>

@@ -1,8 +1,8 @@
 // src/components/post/PostHeader.tsx
 import { Link } from 'react-router-dom';
 import { 
-  Clock, Bookmark, Share2, Twitter, ChevronLeft ,ChevronRight, Sparkles ,Linkedin, 
-  Facebook, MessageCircle, Link2, CheckCircle2, Zap ,
+  Clock, Bookmark, Share2, Twitter, ChevronLeft ,Linkedin, 
+  Facebook, MessageCircle, Link2, Zap ,
 } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';

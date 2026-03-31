@@ -155,7 +155,7 @@ export default function Navbar({ progress = 0 }: NavbarProps) {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
-              className="md:hidden fixed top-12 left-0 right-0 bg-white/95 backdrop-blur-xl z-40 border-b border-black/5"
+              className="md:hidden fixed top-12 left-0 right-0 bg-white/95  backdrop-blur-xl z-40 border-b border-black/5"
             >
               <div className="max-w-6xl mx-auto px-4 py-4">
                 <nav className="space-y-1">
