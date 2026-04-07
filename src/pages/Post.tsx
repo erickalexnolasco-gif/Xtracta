@@ -1,20 +1,20 @@
 // src/pages/Post.tsx
-import { useEffect, useState, useMemo } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { Loader2 } from 'lucide-react';
-import { supabase } from '../lib/supabase';
-import { toast, Toaster } from 'sonner';
+import { useEffect, useState, useMemo } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { Loader2 } from "lucide-react";
+import { supabase } from "../lib/supabase";
+import { toast, Toaster } from "sonner";
 
 // Componentes de Post
-import PostHeader from '../components/post/PostHeader';
-import PostContent from '../components/post/PostContent';
-import TableOfContents from '../components/post/TableOfContents';
-import RelatedPosts from '../components/post/RelatedPosts';
-import CommentsSection from '../components/post/CommentsSection';
+import PostHeader from "../components/post/PostHeader";
+import PostContent from "../components/post/PostContent";
+import TableOfContents from "../components/post/TableOfContents";
+import RelatedPosts from "../components/post/RelatedPosts";
+import CommentsSection from "../components/post/CommentsSection";
 
 // Componentes UI
-import ProgressBar from '../components/ui/ProgressBar';
-import ScrollToTopButton from '../components/ui/ScrollToTopButton';
+import ProgressBar from "../components/ui/ProgressBar";
+import ScrollToTopButton from "../components/ui/ScrollToTopButton";
 
 export default function Post() {
   const { id } = useParams<{ id: string }>();
@@ -29,12 +29,12 @@ export default function Post() {
   // Tabla de contenidos
   const tableOfContents = useMemo(() => {
     if (!post?.content) return [];
-    const tempDiv = document.createElement('div');
+    const tempDiv = document.createElement("div");
     tempDiv.innerHTML = post.content;
-    const headings = tempDiv.querySelectorAll('h2');
+    const headings = tempDiv.querySelectorAll("h2");
     return Array.from(headings).map((heading, index) => ({
       id: heading.id || `section-${index}`,
-      title: heading.textContent || '',
+      title: heading.textContent || "",
     }));
   }, [post?.content]);
 
@@ -43,27 +43,28 @@ export default function Post() {
     async function fetchPost() {
       if (!id) return;
       setLoading(true);
-      
+
       try {
         const { data: postData, error: postError } = await supabase
-          .from('posts')
-          .select('id, title, summary, content, image_url, published_at, read_time, authors(name, username), categories(name), types(name)')
-          .eq('id', id)
+          .from("posts")
+          .select(
+            "id, title, summary, content, image_url, published_at, read_time, authors(name, username), categories(name), types(name)",
+          )
+          .eq("id", id)
           .single();
 
         if (postError) throw postError;
         if (!postData) {
-          navigate('/');
+          navigate("/");
           return;
         }
-        
+
         setPost(postData);
         document.title = `${postData.title} - Xtracta`;
-        
       } catch (error) {
-        console.error('Error:', error);
-        toast.error('Error al cargar el artículo');
-        navigate('/');
+        console.error("Error:", error);
+        toast.error("Error al cargar el artículo");
+        navigate("/");
       } finally {
         setLoading(false);
       }
@@ -74,18 +75,18 @@ export default function Post() {
   // Asignar IDs a H2
   useEffect(() => {
     if (!post?.content) return;
-    
+
     const timer = setTimeout(() => {
-      const contentElement = document.querySelector('.article-content');
+      const contentElement = document.querySelector(".article-content");
       if (!contentElement) return;
 
-      const headings = contentElement.querySelectorAll('h2');
+      const headings = contentElement.querySelectorAll("h2");
       if (headings.length === 0) return;
-      
+
       headings.forEach((heading, index) => {
         const id = `section-${index}`;
         heading.id = id;
-        heading.style.scrollMarginTop = '120px';
+        heading.style.scrollMarginTop = "120px";
       });
     }, 300);
 
@@ -114,8 +115,8 @@ export default function Post() {
       }
     };
 
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, [tableOfContents]);
 
   // Loading
@@ -131,8 +132,12 @@ export default function Post() {
   if (!post) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center gap-6 bg-white">
-        <h2 className="text-3xl font-bold text-gray-900">Artículo no encontrado</h2>
-        <p className="text-gray-500 text-lg">El artículo que buscas no existe.</p>
+        <h2 className="text-3xl font-bold text-gray-900">
+          Artículo no encontrado
+        </h2>
+        <p className="text-gray-500 text-lg">
+          El artículo que buscas no existe.
+        </p>
       </div>
     );
   }
@@ -145,25 +150,24 @@ export default function Post() {
 
       <div className="bg-white min-h-screen">
         <div className="max-w-7xl container mx-auto px-4 pt-14 md:pt-19 pb-20 grow">
-          
           <PostHeader post={post} />
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-16">
             <aside className="hidden lg:block lg:col-span-3">
               <div className="sticky top-28">
-                <TableOfContents 
-                  sections={tableOfContents} 
-                  activeSection={activeSection} 
+                <TableOfContents
+                  sections={tableOfContents}
+                  activeSection={activeSection}
                 />
               </div>
             </aside>
 
             <main className="lg:col-span-9">
               <PostContent post={post} />
-              <CommentsSection />
+              <CommentsSection postId={post.id} />
             </main>
           </div>
-          
+
           {/* RelatedPosts FUERA del grid, abajo de todo */}
           <RelatedPosts />
         </div>

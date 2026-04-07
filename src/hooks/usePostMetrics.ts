@@ -7,6 +7,7 @@ interface PostMetrics {
   views: number;
   likes: number;
   shares: number;
+  comments: number;
 }
 
 export function usePostMetrics(postId: string) {
@@ -15,6 +16,7 @@ export function usePostMetrics(postId: string) {
     views: 0,
     likes: 0,
     shares: 0,
+    comments: 0,
   });
   const [isLiked, setIsLiked] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -30,13 +32,27 @@ export function usePostMetrics(postId: string) {
           .single();
 
         if (error) throw error;
-        if (data) {
+        /*if (data) {
           setMetrics({
             views: data.views || 0,
             likes: data.likes || 0,
             shares: data.shares || 0,
           });
+        }*/
+        // Contar los comentarios
+        const { count: commentsCount, error: commentsError } = await supabase
+          .from("comments")
+          .select("*", { count: "exact", head: true })
+          .eq("post_id", postId);
+        if (commentsError) {
+          throw error;
         }
+        setMetrics({
+          views: data.views || 0,
+          likes: data.likes || 0,
+          shares: data.shares || 0,
+          comments: commentsCount || 0,
+        });
       } catch (error) {
         console.error("Error fetching metrics:", error);
       } finally {
@@ -100,26 +116,26 @@ export function usePostMetrics(postId: string) {
   };
 
   // Función para dar like (SOLO SI ESTÁ LOGUEADO)
-const toggleLike = async (): Promise<boolean> => {
-  if (!user) {
-    // Usuario no logueado - retornar false
-    return false;
-  }
-
-  try {
-    if (isLiked) {
-      // Ya dio like, quitar like
-      await removeLike();
-    } else {
-      // Dar like
-      await addLike();
+  const toggleLike = async (): Promise<boolean> => {
+    if (!user) {
+      // Usuario no logueado - retornar false
+      return false;
     }
-    return true;
-  } catch (error) {
-    console.error('Error toggling like:', error);
-    return false;
-  }
-};
+
+    try {
+      if (isLiked) {
+        // Ya dio like, quitar like
+        await removeLike();
+      } else {
+        // Dar like
+        await addLike();
+      }
+      return true;
+    } catch (error) {
+      console.error("Error toggling like:", error);
+      return false;
+    }
+  };
 
   // Agregar like a Supabase
   const addLike = async () => {
@@ -127,12 +143,10 @@ const toggleLike = async (): Promise<boolean> => {
 
     try {
       // Insertar en tabla post_likes
-      const { error: likeError } = await supabase
-        .from("post_likes")
-        .insert({
-          user_id: user.id,
-          post_id: postId,
-        });
+      const { error: likeError } = await supabase.from("post_likes").insert({
+        user_id: user.id,
+        post_id: postId,
+      });
 
       if (likeError) throw likeError;
 
