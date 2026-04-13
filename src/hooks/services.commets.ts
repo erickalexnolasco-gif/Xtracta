@@ -21,6 +21,7 @@ export const commentsService = {
   async getCommentsByPost(postId: string): Promise<Comment[]> {
     console.log("Cargando comentarios para post:", postId);
     try {
+      // Pedimos TODOS los comentarios del post de una sola vez
       const { data, error } = await supabase
         .from("comments")
         .select(
@@ -40,65 +41,38 @@ export const commentsService = {
         `,
         )
         .eq("post_id", postId)
-        .is("parent_comment_id", null)
-        .order("created_at", { ascending: false });
-      //console.log(data);
+        .order("created_at", { ascending: true }); // Traemos todos para ordenarlos después en memoria
+
       if (error) {
         console.error("Error de Supabase:", error);
         throw error;
       }
-      // Obtener respuestas para cada comentario
-      const commentsWithReplies = await Promise.all(
-        (data || []).map(async (comment) => {
-          const replies = await this.getReplies(comment.id);
-          return {
-            ...comment,
-            replies,
-            users: Array.isArray(comment.users)
-              ? comment.users[0]
-              : comment.users,
-          };
-        }),
+
+// Formateamos los usuarios e inicializamos el array de respuestas
+      const allComments = (data || []).map((comment: any) => ({
+        ...comment,
+        users: Array.isArray(comment.users) ? comment.users[0] : comment.users,
+        replies: [] as Comment[], // 👇 EL CAMBIO ESTÁ AQUÍ
+      })) as Comment[]; // 👇 Y AQUÍ para asegurar que todo el objeto cumple la interfaz
+
+      // Separamos cuáles son comentarios principales (padres) y cuáles son respuestas
+      const parents = allComments.filter((c) => !c.parent_comment_id);
+      const replies = allComments.filter((c) => c.parent_comment_id);
+
+      // Asignamos las respuestas a sus respectivos padres
+      parents.forEach((parent) => {
+        parent.replies = replies.filter(
+          (reply) => reply.parent_comment_id === parent.id,
+        );
+      });
+
+      // Devolvemos los padres ordenados para que los más recientes salgan primero
+      return parents.sort(
+        (a, b) =>
+          new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
       );
-      return commentsWithReplies;
     } catch (error) {
       console.log(error);
-      return [];
-    }
-  },
-
-  // Obtener respuestas de un comentario
-  async getReplies(commentId: string): Promise<Comment[]> {
-    try {
-      const { data, error } = await supabase
-        .from("comments")
-        .select(
-          `
-          id,
-          content,
-          post_id,
-          user_id,
-          parent_comment_id,
-          created_at,
-          users!comments_user_id_fkey (
-            id,
-            name,
-            email,
-            avatar_url
-          )
-        `,
-        )
-        .eq("parent_comment_id", commentId)
-        .order("created_at", { ascending: true });
-
-      if (error) throw error;
-
-      return (data || []).map((reply) => ({
-        ...reply,
-        users: Array.isArray(reply.users) ? reply.users[0] : reply.users,
-      }));
-    } catch (error) {
-      console.error("Error al obtener respuestas:", error);
       return [];
     }
   },

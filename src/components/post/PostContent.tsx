@@ -1,6 +1,6 @@
 // src/components/post/PostContent.tsx
 import DOMPurify from "dompurify";
-import { Heart, MessageCircle, Eye, Share2 } from "lucide-react";
+import { Heart, MessageSquare, Eye, Share2 } from "lucide-react";
 import { usePostMetrics } from "../../hooks/usePostMetrics";
 import { toast } from "sonner";
 import { useState } from "react";
@@ -102,7 +102,7 @@ export default function PostContent({ post }: PostContentProps) {
             onClick={onComment}
             className="flex items-center gap-2.5 text-[15px] font-medium text-[#1d1d1f] group hover:scale-105 transition-transform"
           >
-            <MessageCircle className="w-5 h-5 text-gray-400 group-hover:text-blue-500 transition-colors" />
+            <MessageSquare className="w-5 h-5 text-gray-400 group-hover:text-blue-500 transition-colors" />
             <span>
               {metrics.comments}{" "}
               <span className="text-gray-400 font-normal">Comentarios</span>

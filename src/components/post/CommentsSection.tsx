@@ -19,19 +19,30 @@ export default function CommentsSection({ postId }: CommentsSectionProps) {
   const [replyingTo, setReplyingTo] = useState<string | null>(null);
   const [replyContent, setReplyContent] = useState("");
 
+// 👇 Quitamos el useCallback. Lo definimos directamente dentro del useEffect 
+  // o simplemente dependemos del postId.
   useEffect(() => {
+    let isMounted = true; // Buena práctica para evitar actualizar estado si el componente se desmonta
+
+    async function loadComments() {
+      setLoading(true);
+      const data = await commentsService.getCommentsByPost(postId);
+      
+      if (isMounted) {
+        setComments(data);
+        setLoading(false);
+      }
+    }
+
     loadComments();
-  }, [postId]);
 
-  async function loadComments() {
-    setLoading(true);
-    const data = await commentsService.getCommentsByPost(postId);
-    setComments(data);
-    setLoading(false);
-  }
+    return () => {
+      isMounted = false; // Cleanup al desmontar
+    };
+  }, [postId]); // Solo volvemos a cargar si el postId cambia
 
+  // ... resto del código EXACTAMENTE IGUAL
   async function handleSubmitComment() {
-    // Si usuario no esta autenticado o el comentario es vacio, no se hace nada
     if (!user || !newComment.trim()) return;
 
     setSubmitting(true);
@@ -50,7 +61,6 @@ export default function CommentsSection({ postId }: CommentsSectionProps) {
   }
 
   async function handleSubmitReply(parentId: string) {
-    // Si usuario no esta autenticado o el comentario es vacio, no se hace nada
     if (!user || !replyContent.trim()) return;
 
     setSubmitting(true);
@@ -82,6 +92,7 @@ export default function CommentsSection({ postId }: CommentsSectionProps) {
     });
   }
 
+  // ... resto del JSX EXACTAMENTE IGUAL
   if (loading) {
     return (
       <section className="mt-16 bg-[#fafafa] rounded-4xl p-8 md:p-12 border border-gray-100">
@@ -98,7 +109,6 @@ export default function CommentsSection({ postId }: CommentsSectionProps) {
         Conversación ({comments.length})
       </h3>
 
-      {/* Input para nuevo comentario */}
       {user ? (
         <div className="flex gap-6 mb-16">
           <div className="w-12 h-12 rounded-full bg-white border border-gray-200 shrink-0 flex items-center justify-center overflow-hidden shadow-sm">
@@ -153,7 +163,6 @@ export default function CommentsSection({ postId }: CommentsSectionProps) {
         </div>
       )}
 
-      {/* Lista de comentarios */}
       <div className="space-y-12">
         {comments.length === 0 ? (
           <div className="text-center py-12">
@@ -167,7 +176,6 @@ export default function CommentsSection({ postId }: CommentsSectionProps) {
                 <div className="absolute left-6 top-12 bottom-0 w-px bg-gray-200" />
               )}
 
-              {/* Comentario principal */}
               <div className="flex gap-6 relative z-10 bg-[#fafafa]">
                 <div className="w-12 h-12 rounded-full border border-gray-200 shrink-0 overflow-hidden shadow-sm">
                   <img
@@ -205,7 +213,6 @@ export default function CommentsSection({ postId }: CommentsSectionProps) {
                     </button>
                   </div>
 
-                  {/* Input para responder */}
                   {replyingTo === comment.id && user && (
                     <div className="mt-4 flex gap-4">
                       <div className="w-10 h-10 rounded-full overflow-hidden border border-gray-200 shrink-0">
@@ -250,7 +257,6 @@ export default function CommentsSection({ postId }: CommentsSectionProps) {
                 </div>
               </div>
 
-              {/* Respuestas anidadas */}
               {comment.replies && comment.replies.length > 0 && (
                 <div className="ml-16 mt-8 space-y-8">
                   {comment.replies.map((reply: any) => (

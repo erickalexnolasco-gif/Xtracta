@@ -102,7 +102,7 @@ export default function UserDropdown() {
             initial="hidden"
             animate="visible"
             exit="exit"
-            className="absolute right-0 top-0 w-70 bg-white/90 backdrop-blur-[20px] rounded-3xl shadow-macos border border-slate-100 overflow-hidden z-100 origin-top-right shadow-sm"
+            className="absolute right-0 top-0 w-70 bg-white backdrop-blur-[20px] rounded-3xl shadow-macos border border-slate-100 overflow-hidden z-100 origin-top-right shadow-sm"
           >
             {/* Header Section */}
             <div className="p-2">

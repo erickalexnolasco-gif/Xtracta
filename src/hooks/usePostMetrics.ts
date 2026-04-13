@@ -78,10 +78,10 @@ export function usePostMetrics(postId: string) {
     try {
       const { data, error } = await supabase
         .from("post_likes")
-        .select("id")
+        .select("*")
         .eq("post_id", postId)
         .eq("user_id", user.id)
-        .single();
+        .maybeSingle()
 
       if (!error && data) {
         setIsLiked(true);

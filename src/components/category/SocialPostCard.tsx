@@ -7,6 +7,7 @@ import {
   Share2, 
   Eye 
 } from 'lucide-react';
+import { usePostMetrics } from '../../hooks/usePostMetrics';
 
 interface SocialPostCardProps {
   post: {
@@ -29,6 +30,8 @@ interface SocialPostCardProps {
 }
 
 export default function SocialPostCard({ post }: SocialPostCardProps) {
+
+  const { metrics } = usePostMetrics(post.id);
   
   // ==================== LÓGICA DE TIEMPO RELATIVO ====================
   const getRelativeTime = (dateString: string) => {
@@ -72,12 +75,12 @@ export default function SocialPostCard({ post }: SocialPostCardProps) {
   );
 
   return (
-    <article className="social-card bg-white rounded-2xl border border-slate-100 shadow-sm flex flex-col p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-slate-200/50 group">
+    <article className="social-card bg-white rounded-3xl border border-slate-100 shadow-sm flex flex-col p-4 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-slate-200/50 group">
       
       {/* HEADER: AUTOR */}
       <div className="flex items-start justify-between mb-5">
-        <div className="flex items-center gap-3">
-          <div className="size-11 rounded-full border border-slate-100 overflow-hidden shrink-0 bg-slate-50">
+        <div className="flex items-center gap-4">
+          <div className="size-9 md:size-12 rounded-full border border-slate-100 overflow-hidden shrink-0 bg-slate-100">
             <img 
               src={`https://i.pravatar.cc/150?u=${post.authors.name}`} 
               alt={post.authors.name} 
@@ -86,16 +89,16 @@ export default function SocialPostCard({ post }: SocialPostCardProps) {
           </div>
           <div className="flex flex-col">
             <div className="flex items-center gap-1.5">
-              <h4 className="text-sm font-bold text-slate-900 leading-none">{post.authors.name}</h4>
+              <h4 className="text-sm md:text-base font-bold text-slate-900 leading-none">{post.authors.name}</h4>
               <InstagramVerified />
             </div>
-            <p className="text-xs text-slate-400 font-medium mt-1 tracking-tight">
+            <p className="text-xs md:text-sm text-slate-400 font-medium mt-1">
               @{post.authors.username?.toLowerCase().replace(/\s+/g, '')} • {getRelativeTime(post.published_at)}
             </p>
           </div>
         </div>
         <button className="text-slate-400 hover:text-blue-600 transition-colors">
-          <MoreHorizontal size={18} />
+          <MoreHorizontal size={20} />
         </button>
       </div>
 
@@ -126,26 +129,25 @@ export default function SocialPostCard({ post }: SocialPostCardProps) {
         </span>
       </div>
 
-      {/* FOOTER: ACCIONES CON MÉTRICAS REALES */}
-      <div className="mt-auto pt-5 border-t border-slate-100 flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <button className="flex items-center gap-1.5 text-slate-500 hover:text-red-500 transition-colors group/btn">
-            <Heart size={18} className="group-hover/btn:fill-red-500/10" /> 
-            <span className="text-xs font-bold text-slate-500">{formatNumber(post.likes || 0)}</span>
+      {/* FOOTER: ACCIONES SOCIALES CON MÉTRICAS REALES */}
+      <div className="mt-auto pt-3 border-t border-black/6 flex items-center justify-between">
+        <div className="flex items-center gap-3 md:gap-5">
+          <button className="flex items-center gap-1 md:gap-2 text-slate-500 hover:text-red-500 transition-colors group/btn">
+            <Heart size={16} className="group-hover/btn:fill-red-500/10" />
+            <span className="text-xs font-bold">{formatNumber(post.likes || 0)}</span>
           </button>
-          <button className="flex items-center gap-1.5 text-slate-500 hover:text-blue-600 transition-colors group/btn">
-            <MessageSquare size={18} className="group-hover/btn:fill-blue-500/10" /> 
-            <span className="text-xs font-bold text-slate-500">12</span>
+          <button className="flex items-center gap-1 md:gap-2 text-slate-500 hover:text-blue-600 transition-colors group/btn">
+            <MessageSquare size={16} className="group-hover/btn:fill-blue-600/10" />
+            <span className="text-xs font-bold">{formatNumber(metrics.comments || 0)}</span>
           </button>
-          <button className="flex items-center gap-1.5 text-slate-500 hover:text-blue-600 transition-colors">
-            <Share2 size={18} /> 
-            <span className="text-xs font-bold text-slate-500">{formatNumber(post.shares || 0)}</span>
+          <button className="flex items-center gap-1 md:gap-2 text-slate-500 hover:text-blue-600 transition-colors">
+            <Share2 size={16} />
+            <span className="text-xs font-bold">{formatNumber(post.shares || 0)}</span>
           </button>
         </div>
-        
-        <div className="flex items-center gap-1.5 text-slate-500">
-          <Eye size={18} />
-          <span className="text-xs font-bold tracking-widest">{formatNumber(post.views || 0)} Vistas</span>
+        <div className="flex items-center gap-1 md:gap-2 text-slate-500">
+          <Eye size={16} />
+          <span className="text-xs font-bold">{formatNumber(post.views || 0)} Vistas</span>
         </div>
       </div>
     </article>

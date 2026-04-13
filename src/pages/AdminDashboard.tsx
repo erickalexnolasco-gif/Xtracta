@@ -21,6 +21,7 @@ import {
   Italic,
   Underline,
   Link as LinkIcon,
+  List,
 } from "lucide-react";
 import { supabase } from "../lib/supabase";
 import { useAuth } from "../contexts/AuthContext";
@@ -229,6 +230,7 @@ export default function AdminDashboard({ onClose }: { onClose: () => void }) {
           id_category: categoryId, // ¿Se llama categories en supabase?
           id_type_post: typeId, // ¿Se llama types en supabase?
           id_author: authorId, // ¿Se llama authors en supabase?
+          is_published: true,
           read_time: calculatedReadTime,
           published_at: scheduleEnabled
             ? `${scheduleDate}T${scheduleTime}:00`
@@ -246,16 +248,34 @@ export default function AdminDashboard({ onClose }: { onClose: () => void }) {
     }
   };
 
-  // 5. BIBLIOTECA DE MEDIOS
+// 5. BIBLIOTECA DE MEDIOS
   const fetchMedia = async () => {
-    const { data } = await supabase.storage.from("media").list();
-    if (data) {
-      const items = data.map((file) => ({
-        name: file.name,
-        url: supabase.storage.from("media").getPublicUrl(file.name).data
-          .publicUrl,
-      }));
-      setMediaItems(items);
+    try {
+      // 👇 1. El bucket es "blog-images" y listamos dentro de "img_posts"
+      const { data, error } = await supabase.storage
+        .from("blog-images")
+        .list("img_posts");
+      
+      if (error) {
+        console.error("Error de Supabase al cargar imágenes:", error);
+        toast.error("No se pudieron cargar las imágenes");
+        return;
+      }
+
+      if (data) {
+        const items = data
+          .filter((file) => file.name !== ".emptyFolderPlaceholder")
+          .map((file) => ({
+            name: file.name,
+            // 👇 2. La URL pública debe incluir la ruta de la carpeta "img_posts/"
+            url: supabase.storage
+              .from("blog-images")
+              .getPublicUrl(`img_posts/${file.name}`).data.publicUrl,
+          }));
+        setMediaItems(items);
+      }
+    } catch (err) {
+      console.error("Error inesperado en fetchMedia:", err);
     }
   };
 
@@ -268,12 +288,25 @@ export default function AdminDashboard({ onClose }: { onClose: () => void }) {
       setUploading(true);
       if (!e.target.files?.[0]) return;
       const file = e.target.files[0];
-      const fileName = `${Date.now()}-${file.name}`;
-      await supabase.storage.from("media").upload(fileName, file);
+      
+      const cleanFileName = file.name.replace(/[^a-zA-Z0-9.]/g, "_");
+      const fileName = `${Date.now()}-${cleanFileName}`;
+      
+      // 👇 3. Subimos al bucket "blog-images" dentro de la carpeta "img_posts"
+      const { error } = await supabase.storage
+        .from("blog-images")
+        .upload(`img_posts/${fileName}`, file);
+      
+      if (error) {
+        console.error("Error de Supabase al subir:", error);
+        throw error; 
+      }
+      
       toast.success("Imagen subida a la biblioteca");
-      fetchMedia();
-    } catch (err) {
-      toast.error("Error al subir imagen");
+      fetchMedia(); 
+    } catch (err: any) {
+      console.error(err);
+      toast.error(err.message || "Error al subir imagen"); 
     } finally {
       setUploading(false);
     }

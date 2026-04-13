@@ -1,13 +1,14 @@
 //src/components/category/SocialFeaturedCard.tsx
-import { Link } from "react-router-dom";
-import {
-  MoreHorizontal,
+import { Link } from 'react-router-dom';
+import { 
+  MoreHorizontal, 
   Heart,
-  Share2,
+  Share2, 
   Eye,
-  MessageSquare,
-} from "lucide-react";
-import { motion } from "framer-motion";
+  MessageSquare
+} from 'lucide-react';
+import { motion } from 'framer-motion';
+import { usePostMetrics } from '../../hooks/usePostMetrics';
 
 interface PostProps {
   post: {
@@ -19,7 +20,6 @@ interface PostProps {
     views?: number;
     likes?: number;
     shares?: number;
-    comments?: number;
     authors: {
       name: string;
       username: string;
@@ -31,6 +31,9 @@ interface PostProps {
 }
 
 export default function SocialFeaturedCard({ post }: PostProps) {
+
+  const { metrics } = usePostMetrics(post.id);
+
   // ==================== LÓGICA DE TIEMPO RELATIVO ====================
   const getRelativeTime = (dateString: string) => {
     const now = new Date();
@@ -43,11 +46,11 @@ export default function SocialFeaturedCard({ post }: PostProps) {
     if (diffInMinutes < 60) return "Hace un momento";
     if (diffInHours < 24) return `Hace ${diffInHours} h`;
     if (diffInDays < 7) return `Hace ${diffInDays} d`;
-
-    return published.toLocaleDateString("es-MX", {
-      day: "numeric",
-      month: "short",
-      year: "numeric",
+    
+    return published.toLocaleDateString('es-MX', { 
+      day: 'numeric', 
+      month: 'short', 
+      year: 'numeric' 
     });
   };
 
@@ -60,45 +63,38 @@ export default function SocialFeaturedCard({ post }: PostProps) {
 
   // ==================== COMPONENTE VERIFICADO (INSTAGRAM STYLE) ====================
   const InstagramVerified = () => (
-    <svg
-      viewBox="0 0 40 40"
-      className="size-3.25 md:size-3.75 fill-blue-500 shrink-0"
+    <svg 
+      viewBox="0 0 40 40" 
+      className="size-3.25 md:size-3.75 fill-blue-500 shrink-0" 
       xmlns="http://www.w3.org/2000/svg"
     >
-      <path
-        d="M19.998 3.094 14.638 0l-2.972 5.15H5.432v6.354L0 14.64 3.094 20 0 25.359l5.432 3.137v5.905h5.975L14.638 40l5.36-3.094L25.358 40l3.232-5.6h6.162v-6.01L40 25.359 36.905 20 40 14.641l-5.248-3.03v-6.46h-6.419L25.358 0l-5.36 3.094Zm7.415 11.225 2.254 2.287-11.43 11.5-6.835-6.93 2.244-2.258 4.587 4.581 9.18-9.18Z"
+      <path 
+        d="M19.998 3.094 14.638 0l-2.972 5.15H5.432v6.354L0 14.64 3.094 20 0 25.359l5.432 3.137v5.905h5.975L14.638 40l5.36-3.094L25.358 40l3.232-5.6h6.162v-6.01L40 25.359 36.905 20 40 14.641l-5.248-3.03v-6.46h-6.419L25.358 0l-5.36 3.094Zm7.415 11.225 2.254 2.287-11.43 11.5-6.835-6.93 2.244-2.258 4.587 4.581 9.18-9.18Z" 
         fillRule="evenodd"
       />
     </svg>
   );
 
   return (
-    <motion.article
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.1 }}
-      className="col-span-1 md:col-span-2 lg:col-span-3 bg-white rounded-3xl border border-slate-100 shadow-sm flex flex-col p-4 lg:p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-slate-200/50 group"
-    >
+    <motion.article initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="col-span-1 md:col-span-2 lg:col-span-3 bg-white rounded-3xl border border-slate-100 shadow-sm flex flex-col p-4 lg:p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-slate-200/50 group">
+      
       {/* HEADER: INFO DEL AUTOR */}
       <div className="flex items-start justify-between mb-5">
         <div className="flex items-center gap-4">
           <div className="size-9 md:size-12 rounded-full bg-slate-100 border border-slate-100 overflow-hidden shrink-0">
-            <img
-              src={`https://i.pravatar.cc/150?u=${post.authors.name}`}
-              alt={post.authors.name}
-              className="w-full h-full object-cover"
+            <img 
+              src={`https://i.pravatar.cc/150?u=${post.authors.name}`} 
+              alt={post.authors.name} 
+              className="w-full h-full object-cover" 
             />
           </div>
           <div className="flex flex-col">
             <div className="flex items-center gap-1.5">
-              <h4 className="text-sm md:text-base font-bold text-slate-900 leading-none">
-                {post.authors.name}
-              </h4>
+              <h4 className="text-sm md:text-base font-bold text-slate-900 leading-none">{post.authors.name}</h4>
               <InstagramVerified />
             </div>
             <p className="text-xs md:text-sm text-slate-400 font-medium mt-1">
-              @{post.authors.username?.toLowerCase().replace(/\s+/g, "")} •{" "}
-              {getRelativeTime(post.published_at)}
+              @{post.authors.username?.toLowerCase().replace(/\s+/g, '')} • {getRelativeTime(post.published_at)}
             </p>
           </div>
         </div>
@@ -119,52 +115,43 @@ export default function SocialFeaturedCard({ post }: PostProps) {
             {post.summary}
           </p>
           <div className="flex flex-wrap gap-1.5">
-            <span className="text-blue-600 text-xs md:text-sm font-semibold hover:underline cursor-pointer bg-blue-50/50 px-2 py-0.5 rounded-md">
-              #{post.categories.name.replace(/\s+/g, "")}
-            </span>
-          </div>
+              <span className="text-blue-600 text-xs md:text-sm font-semibold hover:underline cursor-pointer bg-blue-50/50 px-2 py-0.5 rounded-md">
+                #{post.categories.name.replace(/\s+/g, '')}
+              </span>
+            </div>
         </div>
 
         {/* CONTENEDOR DE IMAGEN */}
         <Link to={`/post/${post.id}`} className="w-full">
           <div className="w-full aspect-video rounded-2xl overflow-hidden border border-slate-50 shadow-inner relative">
-            <img
-              src={post.image_url}
-              alt={post.title}
-              className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700"
+            <img 
+              src={post.image_url} 
+              alt={post.title} 
+              className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700" 
             />
           </div>
         </Link>
       </div>
 
       {/* FOOTER: ACCIONES SOCIALES CON MÉTRICAS REALES */}
-      <div className="mt-auto pt-3 border-t border-black/[0.06] flex items-center justify-between">
+      <div className="mt-auto pt-3 border-t border-black/6 flex items-center justify-between">
         <div className="flex items-center gap-3 md:gap-5">
           <button className="flex items-center gap-1 md:gap-2 text-slate-500 hover:text-red-500 transition-colors group/btn">
             <Heart size={16} className="group-hover/btn:fill-red-500/10" />
-            <span className="text-xs font-bold">
-              {formatNumber(post.likes || 0)}
-            </span>
+            <span className="text-xs font-bold">{formatNumber(post.likes || 0)}</span>
           </button>
           <button className="flex items-center gap-1 md:gap-2 text-slate-500 hover:text-blue-600 transition-colors group/btn">
-            <MessageSquare
-              size={16}
-              className="group-hover/btn:fill-blue-600/10"
-            />
-            <span className="text-xs font-bold">18</span>
+            <MessageSquare size={16} className="group-hover/btn:fill-blue-600/10" />
+            <span className="text-xs font-bold">{formatNumber(metrics.comments || 0)}</span>
           </button>
           <button className="flex items-center gap-1 md:gap-2 text-slate-500 hover:text-blue-600 transition-colors">
             <Share2 size={16} />
-            <span className="text-xs font-bold">
-              {formatNumber(post.shares || 0)}
-            </span>
+            <span className="text-xs font-bold">{formatNumber(post.shares || 0)}</span>
           </button>
         </div>
         <div className="flex items-center gap-1 md:gap-2 text-slate-500">
           <Eye size={16} />
-          <span className="text-xs font-bold">
-            {formatNumber(post.views || 0)} Vistas
-          </span>
+          <span className="text-xs font-bold">{formatNumber(post.views || 0)} Vistas</span>
         </div>
       </div>
     </motion.article>

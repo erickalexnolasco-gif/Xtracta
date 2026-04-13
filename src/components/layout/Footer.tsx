@@ -85,16 +85,24 @@ export default function Footer() {
               </div>
             </div>
 
-            {/* BLOQUE 2: PRODUCTO */}
+            {/* BLOQUE 2: HERRAMIENTAS */}
             <div className="md:col-span-2 space-y-5">
-              <h4 className="font-bold text-[#1d1d1f] text-xs uppercase tracking-[0.2em]">Productos</h4>
+              <h4 className="font-bold text-[#1d1d1f] text-xs uppercase tracking-[0.2em]">Herramientas</h4>
               <ul className="space-y-3">
-                {['Convertidor XML', 'Validador SAT', 'API Fiscal'].map((item) => (
-                  <li key={item}>
-                    <a href="#" className="text-gray-500 text-sm font-semibold hover:text-[#0071e3] transition-colors flex items-center group">
+                {[
+                  // 👇 Ahora usamos objetos con nombre y su respectivo enlace
+                  { name: 'Convertidor XML', href: '/herramientas/convertidor-xml' }
+                ].map((item) => (
+                // 👇 Usamos item.name para la key
+                <li key={item.name}>
+                  {/* 👇 Le pasamos el item.href al atributo href */}
+                    <Link 
+                      to={item.href} // En Link se usa "to" en lugar de "href"
+                      className="text-gray-500 text-sm font-semibold hover:text-[#0071e3] transition-colors flex items-center group"
+                    >
                       <ChevronRight size={14} className="opacity-0 -ml-4 group-hover:opacity-100 group-hover:ml-0 transition-all duration-300" />
-                      {item}
-                    </a>
+                      {item.name}
+                    </Link>
                   </li>
                 ))}
               </ul>
@@ -102,14 +110,22 @@ export default function Footer() {
 
             {/* BLOQUE 3: RECURSOS */}
             <div className="md:col-span-2 space-y-5">
-              <h4 className="font-bold text-[#1d1d1f] text-xs uppercase tracking-[0.2em]">Recursos</h4>
+              <h4 className="font-bold text-[#1d1d1f] text-xs uppercase tracking-[0.2em]">Herramientas</h4>
               <ul className="space-y-3">
-                {['Blog', 'Guías PDF', 'Newsletter'].map((item) => (
-                  <li key={item}>
-                    <a href="#" className="text-gray-500 text-sm font-semibold hover:text-[#0071e3] transition-colors flex items-center group">
+                {[
+                  // 👇 Ahora usamos objetos con nombre y su respectivo enlace
+                  { name: 'Blog', href: '/category' }
+                ].map((item) => (
+                // 👇 Usamos item.name para la key
+                <li key={item.name}>
+                  {/* 👇 Le pasamos el item.href al atributo href */}
+                    <Link 
+                      to={item.href} // En Link se usa "to" en lugar de "href"
+                      className="text-gray-500 text-sm font-semibold hover:text-[#0071e3] transition-colors flex items-center group"
+                    >
                       <ChevronRight size={14} className="opacity-0 -ml-4 group-hover:opacity-100 group-hover:ml-0 transition-all duration-300" />
-                      {item}
-                    </a>
+                      {item.name}
+                    </Link>
                   </li>
                 ))}
               </ul>
