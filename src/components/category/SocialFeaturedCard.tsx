@@ -10,6 +10,20 @@ import {
 import { motion } from 'framer-motion';
 import { usePostMetrics } from '../../hooks/usePostMetrics';
 
+  // ==================== COMPONENTE VERIFICADO (INSTAGRAM STYLE) ====================
+  const InstagramVerified = () => (
+    <svg 
+      viewBox="0 0 40 40" 
+      className="size-3.25 md:size-3.75 fill-blue-500 shrink-0" 
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path 
+        d="M19.998 3.094 14.638 0l-2.972 5.15H5.432v6.354L0 14.64 3.094 20 0 25.359l5.432 3.137v5.905h5.975L14.638 40l5.36-3.094L25.358 40l3.232-5.6h6.162v-6.01L40 25.359 36.905 20 40 14.641l-5.248-3.03v-6.46h-6.419L25.358 0l-5.36 3.094Zm7.415 11.225 2.254 2.287-11.43 11.5-6.835-6.93 2.244-2.258 4.587 4.581 9.18-9.18Z" 
+        fillRule="evenodd"
+      />
+    </svg>
+  );
+
 interface PostProps {
   post: {
     id: string;
@@ -23,6 +37,7 @@ interface PostProps {
     authors: {
       name: string;
       username: string;
+      avatar?: string;
     };
     categories: {
       name: string;
@@ -32,7 +47,7 @@ interface PostProps {
 
 export default function SocialFeaturedCard({ post }: PostProps) {
 
-  const { metrics } = usePostMetrics(post.id);
+  const { metrics, isLiked, toggleLike } = usePostMetrics(post.id);
 
   // ==================== LÓGICA DE TIEMPO RELATIVO ====================
   const getRelativeTime = (dateString: string) => {
@@ -61,19 +76,6 @@ export default function SocialFeaturedCard({ post }: PostProps) {
     return num.toString();
   };
 
-  // ==================== COMPONENTE VERIFICADO (INSTAGRAM STYLE) ====================
-  const InstagramVerified = () => (
-    <svg 
-      viewBox="0 0 40 40" 
-      className="size-3.25 md:size-3.75 fill-blue-500 shrink-0" 
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path 
-        d="M19.998 3.094 14.638 0l-2.972 5.15H5.432v6.354L0 14.64 3.094 20 0 25.359l5.432 3.137v5.905h5.975L14.638 40l5.36-3.094L25.358 40l3.232-5.6h6.162v-6.01L40 25.359 36.905 20 40 14.641l-5.248-3.03v-6.46h-6.419L25.358 0l-5.36 3.094Zm7.415 11.225 2.254 2.287-11.43 11.5-6.835-6.93 2.244-2.258 4.587 4.581 9.18-9.18Z" 
-        fillRule="evenodd"
-      />
-    </svg>
-  );
 
   return (
     <motion.article initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="col-span-1 md:col-span-2 lg:col-span-3 bg-white rounded-3xl border border-slate-100 shadow-sm flex flex-col p-4 lg:p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-slate-200/50 group">
@@ -83,9 +85,9 @@ export default function SocialFeaturedCard({ post }: PostProps) {
         <div className="flex items-center gap-4">
           <div className="size-9 md:size-12 rounded-full bg-slate-100 border border-slate-100 overflow-hidden shrink-0">
             <img 
-              src={`https://i.pravatar.cc/150?u=${post.authors.name}`} 
+              src={post.authors.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(post.authors.name)}&background=f8fafc&color=334155`} 
               alt={post.authors.name} 
-              className="w-full h-full object-cover" 
+              className="w-full h-full object-cover"
             />
           </div>
           <div className="flex flex-col">
@@ -105,6 +107,17 @@ export default function SocialFeaturedCard({ post }: PostProps) {
 
       {/* BODY: GRID DE 2 COLUMNAS (Texto e Imagen) */}
       <div className="flex flex-col lg:grid lg:grid-cols-2 gap-5 items-start mb-4 md:mb-6">
+        {/* CONTENEDOR DE IMAGEN */}
+        <Link to={`/post/${post.id}`} className="w-full">
+          <div className="w-full aspect-video rounded-2xl overflow-hidden border border-slate-50 shadow-inner relative">
+            <img 
+              src={post.image_url} 
+              alt={post.title} 
+              className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700" 
+            />
+          </div>
+        </Link>
+
         <div className="flex flex-col space-y-4">
           <Link to={`/post/${post.id}`}>
             <h2 className="text-slate-900 text-xl md:text-2xl lg:text-4xl font-bold  leading-[1.1] tracking-tight group-hover:text-blue-600 transition-colors">
@@ -121,24 +134,27 @@ export default function SocialFeaturedCard({ post }: PostProps) {
             </div>
         </div>
 
-        {/* CONTENEDOR DE IMAGEN */}
-        <Link to={`/post/${post.id}`} className="w-full">
-          <div className="w-full aspect-video rounded-2xl overflow-hidden border border-slate-50 shadow-inner relative">
-            <img 
-              src={post.image_url} 
-              alt={post.title} 
-              className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700" 
-            />
-          </div>
-        </Link>
       </div>
 
       {/* FOOTER: ACCIONES SOCIALES CON MÉTRICAS REALES */}
       <div className="mt-auto pt-3 border-t border-black/6 flex items-center justify-between">
         <div className="flex items-center gap-3 md:gap-5">
-          <button className="flex items-center gap-1 md:gap-2 text-slate-500 hover:text-red-500 transition-colors group/btn">
-            <Heart size={16} className="group-hover/btn:fill-red-500/10" />
-            <span className="text-xs font-bold">{formatNumber(post.likes || 0)}</span>
+          <button 
+            onClick={(e) => {
+              e.preventDefault(); // Evita que se recargue o salte si está dentro de un link
+              toggleLike();
+            }}
+            className={`flex items-center gap-1 md:gap-2 transition-colors group/btn ${
+              isLiked ? 'text-red-500' : 'text-slate-500 hover:text-red-500'
+            }`}
+          >
+            <Heart 
+              size={16} 
+              className={isLiked ? 'fill-current' : 'group-hover/btn:fill-red-500/10'} 
+            />
+            <span className="text-xs font-bold">
+              {formatNumber(metrics.likes || post.likes || 0)}
+            </span>
           </button>
           <button className="flex items-center gap-1 md:gap-2 text-slate-500 hover:text-blue-600 transition-colors group/btn">
             <MessageSquare size={16} className="group-hover/btn:fill-blue-600/10" />

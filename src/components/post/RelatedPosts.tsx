@@ -18,7 +18,7 @@ export default function RelatedPosts() {
         // 👇 CAMBIO 1: Consulta idéntica a la de BlogGrid para asegurar que las métricas funcionen
         const { data, error } = await supabase
           .from('posts')
-          .select('id, title, summary, image_url, published_at, views, likes, shares, authors(name,username), categories(name)')
+          .select('id, title, summary, image_url, published_at, views, likes, shares, authors(name,username,avatar), categories(name)')
           .order('published_at', { ascending: false })
           .limit(6); // 👇 Aumentamos el límite a 6 para que haya elementos para deslizar
 
@@ -108,7 +108,7 @@ export default function RelatedPosts() {
             <div 
               key={post.id} 
               // En móvil la card ocupa el 85% de la pantalla, en tablet/desktop tiene ancho fijo
-              className="snap-start shrink-0 w-[85vw] sm:w-[350px]"
+              className="snap-start shrink-0 w-[85vw] sm:w-87.5"
             >
               <SocialPostCard post={post} />
             </div>

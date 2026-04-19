@@ -104,9 +104,9 @@ export default function PostHeader({ post }: PostHeaderProps) {
             className="flex items-center gap-3 md:gap-5">
             <div className="w-12 h-12 md:w-14 md:h-14 rounded-full overflow-hidden bg-gray-100 border border-gray-50 shadow-md">
               <img 
-                src={`https://i.pravatar.cc/150?u=${post.authors.name}`}
-                alt={post.authors.name}
-                className="w-full h-full object-cover" 
+                src={post.authors.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(post.authors.name)}&background=f8fafc&color=334155`} 
+              alt={post.authors.name} 
+              className="w-full h-full object-cover" 
               />
             </div>
             <div>
@@ -157,8 +157,17 @@ export default function PostHeader({ post }: PostHeaderProps) {
                 {showShareMenu && (
                   <>
                     <div 
+                      role="button"             // 👈 1.
+                      tabIndex={0}              // 👈 2.
                       className="fixed inset-0 z-10" 
                       onClick={() => setShowShareMenu(false)}
+                      // 👇 3.
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          setShowShareMenu(false);
+                        }
+                      }}
+                      aria-label="Cerrar menú" // 👈 4.
                     />
                     <div className="absolute top-full mt-3 right-0 bg-white border border-gray-200 rounded-2xl shadow-2xl p-2 space-y-1 z-20 min-w-50">
                       <button

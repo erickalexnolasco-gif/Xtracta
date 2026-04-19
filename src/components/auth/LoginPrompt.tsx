@@ -22,17 +22,26 @@ export default function LoginPrompt({ isOpen, onClose, message = 'Inicia sesión
       await signInWithGoogle();
     } catch (error) {
       toast.error('Error al iniciar sesión');
-    } finally {
-      setLoading(false);
     }
+      setLoading(false);
+    
   };
 
   return (
     <>
       {/* Overlay */}
       <div 
+        role="button"                  // 👈 1. Decimos que actúa como botón
+        tabIndex={0}                   // 👈 2. Permitimos que el teclado lo encuentre
         className="fixed inset-0 bg-black/30 z-50 backdrop-blur-xs"
         onClick={onClose}
+        // 👇 3. Escuchamos las teclas Enter o Espacio
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            onClose();
+          }
+        }}
+        aria-label="Cerrar modal"      // 👈 4. Descripción para lectores de pantalla
       />
 
       {/* Modal */}

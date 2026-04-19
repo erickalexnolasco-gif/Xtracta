@@ -1,11 +1,12 @@
-//src/components/category/CategoryBar.tsx
+// src/components/category/CategoryBar.tsx
 import { useState, useEffect, useRef } from 'react';
 import { supabase } from '../../lib/supabase';
 import { motion } from 'framer-motion';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Heart } from 'lucide-react'; // 👈 Agregamos Heart
+import { useAuth } from '../../contexts/AuthContext'; // 👈 Importamos useAuth
 
 interface Category {
-  id: number;
+  id: number | string; // 👈 Permitimos string para el ID especial
   name: string;
 }
 
@@ -15,13 +16,13 @@ interface CategoryBarProps {
 }
 
 export default function CategoryBar({ selectedCategory, onSelectCategory }: CategoryBarProps) {
+  const { user } = useAuth(); // 👈 Obtenemos el usuario
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
   const scrollRef = useRef<HTMLDivElement>(null);
   const [showLeftFade, setShowLeftFade] = useState(false);
   const [showRightFade, setShowRightFade] = useState(false);
 
-  // Fetch categories from Supabase
   useEffect(() => {
     async function fetchCategories() {
       try {
@@ -32,30 +33,24 @@ export default function CategoryBar({ selectedCategory, onSelectCategory }: Cate
 
         if (error) {
           console.error('Error fetching categories:', error);
-          // Fallback categories if Supabase fails
           setCategories([
             { id: 1, name: 'SAT' },
             { id: 2, name: 'Nómina' },
             { id: 3, name: 'Impuestos' },
-            { id: 4, name: 'Casos de Éxito' },
-            { id: 5, name: 'Tecnología Contable' },
-            { id: 6, name: 'Noticias' },
-            { id: 7, name: 'Guías Prácticas' },
           ]);
         } else {
           setCategories(data || []);
         }
       } catch (err) {
         console.error('Error:', err);
-      } finally {
-        setLoading(false);
       }
+        setLoading(false);
+      
     }
 
     fetchCategories();
   }, []);
 
-  // Handle scroll indicators
   useEffect(() => {
     const container = scrollRef.current;
     if (!container) return;
@@ -67,7 +62,7 @@ export default function CategoryBar({ selectedCategory, onSelectCategory }: Cate
     };
 
     handleScroll();
-    container.addEventListener('scroll', handleScroll);
+    container.addEventListener('scroll', handleScroll, { passive: true });
     window.addEventListener('resize', handleScroll);
 
     return () => {
@@ -76,7 +71,6 @@ export default function CategoryBar({ selectedCategory, onSelectCategory }: Cate
     };
   }, [categories]);
 
-  // Scroll selected into view
   useEffect(() => {
     const container = scrollRef.current;
     if (!container) return;
@@ -95,27 +89,32 @@ export default function CategoryBar({ selectedCategory, onSelectCategory }: Cate
     );
   }
 
-  const allCategories = [{ id: 0, name: 'Todas' }, ...categories];
+  // 👇 LÓGICA DEL BOTÓN "MIS FAVORITOS"
+  const baseCategories: Category[] = [{ id: 0, name: 'Todas' }];
+  
+  // Si el usuario está logueado, metemos la opción de favoritos
+  if (user) {
+    baseCategories.push({ id: 'favoritos', name: 'Likes' });
+  }
+
+  const allCategories = [...baseCategories, ...categories];
 
   return (
     <div className="w-full mb-12 relative">
-      {/* Left fade - SOLO EN DESKTOP */}
       {showLeftFade && (
         <div className="hidden md:block absolute left-0 top-0 bottom-0 w-16 bg-linear-to-r from-white to-transparent z-10 pointer-events-none" />
       )}
-
-      {/* Right fade */}
       {showRightFade && (
         <div className="absolute right-0 top-0 bottom-0 w-16 bg-linear-to-l from-white to-transparent z-10 pointer-events-none" />
       )}
 
-      {/* Scrollable container */}
       <div
         ref={scrollRef}
-        className="flex items-center justify-start md:justify-center gap-2 md:gap-4 overflow-x-auto py-4 no-scrollbar scroll-smooth px-4 md:px-0"
+        className="flex items-center justify-start gap-2 md:gap-4 overflow-x-auto md:px-1 py-4 no-scrollbar scroll-smooth px-1"
       >
         {allCategories.map((cat, index) => {
           const isActive = cat.name === selectedCategory;
+          const isFavorites = cat.name === 'Likes';
 
           return (
             <motion.button
@@ -126,14 +125,16 @@ export default function CategoryBar({ selectedCategory, onSelectCategory }: Cate
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.05 }}
               className={`
-                text-sm font-semibold whitespace-nowrap px-6 py-2 rounded-full 
+                flex items-center gap-1.5 text-sm md:text-base font-semibold whitespace-nowrap px-6 py-2 rounded-full 
                 transition-all duration-300 ease-out shrink-0
                 ${isActive
                   ? 'bg-blue-600 text-white shadow-md scale-105'
-                  : 'text-gray-600 bg-transparent hover:bg-blue-600 hover:text-white hover:scale-110'
+                  : 'text-blue-600 bg-transparent border border-blue-600 hover:bg-blue-600 hover:text-white hover:scale-110'
                 }
               `}
             >
+              {/* 👇 Si es el botón de favoritos, le ponemos el ícono */}
+              {isFavorites && <Heart className={`w-4 h-4 ${isActive ? 'fill-current' : ''}`} />}
               {cat.name}
             </motion.button>
           );

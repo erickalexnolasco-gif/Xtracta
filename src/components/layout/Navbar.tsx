@@ -22,14 +22,17 @@ export default function Navbar({ progress = 0 }: NavbarProps) {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 10);
     };
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   // Cerrar menú al cambiar de página
-  useEffect(() => {
+  const [prevLocation, setPrevLocation] = useState(location.pathname);
+
+  if (location.pathname !== prevLocation) {
+    setPrevLocation(location.pathname);
     setIsOpen(false);
-  }, [location]);
+  }
 
   // Bloqueo de scroll y blur del fondo
   useEffect(() => {
@@ -42,7 +45,7 @@ export default function Navbar({ progress = 0 }: NavbarProps) {
 
   const navLinks = [
     { name: 'Blog', path: '/', status: 'active' },
-    { name: 'Herramientas', path: '/herramientas/convertidor-xml', status: 'active' },
+    { name: 'Herramientas', path: '/herramientas/convertidor-xml', status: 'soon' }, // status ´soon´ porque no esta terminado
     { name: 'Catálogos', path: '#', status: 'soon' },
     { name: 'Nosotros', path: '#', status: 'soon' },
   ];

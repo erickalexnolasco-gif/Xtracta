@@ -23,7 +23,7 @@ interface ParsedFile {
 
 export default function XMLConverter() {
   const [files, setFiles] = useState<ParsedFile[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [dragActive, setDragActive] = useState(false);
 
   // Calculate totals
@@ -258,19 +258,18 @@ export default function XMLConverter() {
   };
 
   const handleExcel = async () => {
-    setLoading(true);
     try {
       const readyFiles = files.filter((f) => f.status === 'ready' && f.fullData);
       await downloadExcel(readyFiles.map((f) => f.fullData.excel_row));
     } catch (error) {
       console.error('Error generating Excel:', error);
-    } finally {
-      setLoading(false);
     }
+      setLoading(false);
+    
   };
 
   const handleDownloadAll = async () => {
-    setLoading(true);
+    
     try {
       const zip = new JSZip();
       const readyFiles = files.filter((f) => f.status === 'ready' && f.fullData);
@@ -287,9 +286,9 @@ export default function XMLConverter() {
       link.click();
     } catch (error) {
       console.error('Error generating PDFs:', error);
-    } finally {
+    } 
       setLoading(false);
-    }
+    
   };
 
   const formatCurrency = (amount: number) => {

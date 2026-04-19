@@ -171,6 +171,41 @@ export default function AdminDashboard({ onClose }: { onClose: () => void }) {
     }, 0);
   };
 
+  // NUEVA FUNCIÓN: Lógica especial para listas <ul><li>
+  const applyListFormat = () => {
+    const textarea = textareaRef.current;
+    if (!textarea) return;
+
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const selectedText = content.substring(start, end);
+
+    let newText = "";
+    if (selectedText) {
+      // Si el usuario seleccionó texto, separamos por saltos de línea y creamos los <li>
+      const listItems = selectedText
+        .split('\n')
+        .filter(line => line.trim() !== '')
+        .map(line => `  <li>${line}</li>`)
+        .join('\n');
+      newText = `<ul>\n${listItems}\n</ul>\n`;
+    } else {
+      // Si no seleccionó nada, ponemos una plantilla básica
+      newText = "<ul>\n  <li>Elemento 1</li>\n  <li>Elemento 2</li>\n</ul>\n";
+    }
+
+    const newContent =
+      content.substring(0, start) +
+      newText +
+      content.substring(end);
+    setContent(newContent);
+
+    setTimeout(() => {
+      textarea.focus();
+      textarea.setSelectionRange(start + newText.length, start + newText.length);
+    }, 0);
+  };
+
   // 3. FUNCIONES DE CREACIÓN RÁPIDA (+)
   const handleCreateCategory = async () => {
     const name = window.prompt("Nombre de la nueva categoría (ej. Fiscal):");
@@ -243,9 +278,9 @@ export default function AdminDashboard({ onClose }: { onClose: () => void }) {
       onClose();
     } catch (error: any) {
       toast.error("Error al publicar: " + error.message);
-    } finally {
-      setIsSubmitting(false);
     }
+    setIsSubmitting(false);
+    
   };
 
 // 5. BIBLIOTECA DE MEDIOS
@@ -307,9 +342,9 @@ export default function AdminDashboard({ onClose }: { onClose: () => void }) {
     } catch (err: any) {
       console.error(err);
       toast.error(err.message || "Error al subir imagen"); 
-    } finally {
-      setUploading(false);
     }
+      setUploading(false);
+    
   };
 
   return (
@@ -447,6 +482,14 @@ export default function AdminDashboard({ onClose }: { onClose: () => void }) {
                     >
                       P
                     </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={applyListFormat}
+                      title="Lista con viñetas"
+                    >
+                      <List className="w-4 h-4" />
+                    </Button>
                     <div className="w-px h-4 bg-black/10 mx-1" />
                     <Button
                       variant="ghost"
@@ -492,10 +535,11 @@ export default function AdminDashboard({ onClose }: { onClose: () => void }) {
               <div className="w-80 border-l border-black/10 bg-white/70 backdrop-blur-xl overflow-y-auto p-6 space-y-6">
                 {/* AUTOR */}
                 <section>
-                  <label className="text-[12px] font-bold mb-2 block uppercase text-gray-500 tracking-wider">
+                  <label htmlFor="author-select" className="text-[12px] font-bold mb-2 block uppercase text-gray-500 tracking-wider">
                     Autor del Post
                   </label>
                   <select
+                    id="author-select"
                     value={authorId}
                     onChange={(e) => setAuthorId(e.target.value)}
                     className="w-full h-9 border border-black/10 rounded-md px-2 text-[13px] bg-white outline-none"
@@ -513,7 +557,7 @@ export default function AdminDashboard({ onClose }: { onClose: () => void }) {
                 <section className="border-t border-black/5 pt-6 space-y-4">
                   <div>
                     <div className="flex justify-between items-center mb-2">
-                      <label className="text-[12px] font-bold uppercase text-gray-500 tracking-wider">
+                      <label htmlFor="category-select" className="text-[12px] font-bold uppercase text-gray-500 tracking-wider">
                         Categoría
                       </label>
                       <button
@@ -524,6 +568,7 @@ export default function AdminDashboard({ onClose }: { onClose: () => void }) {
                       </button>
                     </div>
                     <select
+                      id="category-select"
                       value={categoryId}
                       onChange={(e) => setCategoryId(e.target.value)}
                       className="w-full h-9 border border-black/10 rounded-md px-2 text-[13px] bg-white outline-none"
@@ -539,7 +584,7 @@ export default function AdminDashboard({ onClose }: { onClose: () => void }) {
 
                   <div>
                     <div className="flex justify-between items-center mb-2">
-                      <label className="text-[12px] font-bold uppercase text-gray-500 tracking-wider">
+                      <label htmlFor="type-select" className="text-[12px] font-bold uppercase text-gray-500 tracking-wider">
                         Tipo de Post
                       </label>
                       <button
@@ -550,6 +595,7 @@ export default function AdminDashboard({ onClose }: { onClose: () => void }) {
                       </button>
                     </div>
                     <select
+                      id="type-select"
                       value={typeId}
                       onChange={(e) => setTypeId(e.target.value)}
                       className="w-full h-9 border border-black/10 rounded-md px-2 text-[13px] bg-white outline-none"
@@ -566,10 +612,11 @@ export default function AdminDashboard({ onClose }: { onClose: () => void }) {
 
                 {/* IMAGEN DE PORTADA */}
                 <section className="border-t border-black/5 pt-6">
-                  <label className="text-[12px] font-bold mb-2 block uppercase text-gray-500 tracking-wider">
+                  <label htmlFor="image-url-input" className="text-[12px] font-bold mb-2 block uppercase text-gray-500 tracking-wider">
                     Imagen Destacada
                   </label>
                   <input
+                    id="image-url-input"
                     placeholder="Pega la URL de la biblioteca..."
                     value={imageUrl}
                     onChange={(e) => setImageUrl(e.target.value)}
@@ -578,6 +625,7 @@ export default function AdminDashboard({ onClose }: { onClose: () => void }) {
                   {imageUrl && (
                     <img
                       src={imageUrl}
+                      alt=""
                       className="mt-3 w-full h-32 object-cover rounded-lg shadow-sm border border-black/5"
                     />
                   )}
@@ -645,6 +693,7 @@ export default function AdminDashboard({ onClose }: { onClose: () => void }) {
                     >
                       <img
                         src={item.url}
+                        alt=""
                         className="w-full h-40 object-cover"
                       />
                       <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">

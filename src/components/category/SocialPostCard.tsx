@@ -9,6 +9,20 @@ import {
 } from 'lucide-react';
 import { usePostMetrics } from '../../hooks/usePostMetrics';
 
+  // ==================== COMPONENTE VERIFICADO (INSTAGRAM STYLE) ====================
+  const InstagramVerified = () => (
+    <svg 
+      viewBox="0 0 40 40" 
+      className="size-3.5 fill-blue-500 shrink-0" 
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path 
+        d="M19.998 3.094 14.638 0l-2.972 5.15H5.432v6.354L0 14.64 3.094 20 0 25.359l5.432 3.137v5.905h5.975L14.638 40l5.36-3.094L25.358 40l3.232-5.6h6.162v-6.01L40 25.359 36.905 20 40 14.641l-5.248-3.03v-6.46h-6.419L25.358 0l-5.36 3.094Zm7.415 11.225 2.254 2.287-11.43 11.5-6.835-6.93 2.244-2.258 4.587 4.581 9.18-9.18Z" 
+        fillRule="evenodd"
+      />
+    </svg>
+  );
+
 interface SocialPostCardProps {
   post: {
     id: string;
@@ -22,6 +36,7 @@ interface SocialPostCardProps {
     authors: {
       name: string;
       username: string;
+      avatar?: string;
     };
     categories: {
       name: string;
@@ -31,7 +46,7 @@ interface SocialPostCardProps {
 
 export default function SocialPostCard({ post }: SocialPostCardProps) {
 
-  const { metrics } = usePostMetrics(post.id);
+  const { metrics, isLiked, toggleLike } = usePostMetrics(post.id);
   
   // ==================== LÓGICA DE TIEMPO RELATIVO ====================
   const getRelativeTime = (dateString: string) => {
@@ -60,19 +75,6 @@ export default function SocialPostCard({ post }: SocialPostCardProps) {
     return num.toString();
   };
 
-  // ==================== COMPONENTE VERIFICADO (INSTAGRAM STYLE) ====================
-  const InstagramVerified = () => (
-    <svg 
-      viewBox="0 0 40 40" 
-      className="size-3.5 fill-blue-500 shrink-0" 
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path 
-        d="M19.998 3.094 14.638 0l-2.972 5.15H5.432v6.354L0 14.64 3.094 20 0 25.359l5.432 3.137v5.905h5.975L14.638 40l5.36-3.094L25.358 40l3.232-5.6h6.162v-6.01L40 25.359 36.905 20 40 14.641l-5.248-3.03v-6.46h-6.419L25.358 0l-5.36 3.094Zm7.415 11.225 2.254 2.287-11.43 11.5-6.835-6.93 2.244-2.258 4.587 4.581 9.18-9.18Z" 
-        fillRule="evenodd"
-      />
-    </svg>
-  );
 
   return (
     <article className="social-card bg-white rounded-3xl border border-slate-100 shadow-sm flex flex-col p-4 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-slate-200/50 group">
@@ -82,7 +84,7 @@ export default function SocialPostCard({ post }: SocialPostCardProps) {
         <div className="flex items-center gap-4">
           <div className="size-9 md:size-12 rounded-full border border-slate-100 overflow-hidden shrink-0 bg-slate-100">
             <img 
-              src={`https://i.pravatar.cc/150?u=${post.authors.name}`} 
+              src={post.authors.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(post.authors.name)}&background=f8fafc&color=334155`} 
               alt={post.authors.name} 
               className="w-full h-full object-cover" 
             />
@@ -104,12 +106,18 @@ export default function SocialPostCard({ post }: SocialPostCardProps) {
 
       {/* TÍTULO Y CONTENIDO */}
       <Link to={`/post/${post.id}`} className="group/content block">
-        <h3 className="text-slate-900 text-lg lg:text-xl font-bold leading-[1.1] mb-2 group-hover/content:text-blue-600 transition-colors">
+        <h3 className="text-slate-900 text-xl font-bold leading-[1.1] mb-2 group-hover/content:text-blue-600 transition-colors">
           {post.title}
         </h3>
-        <p className="text-slate-600 text-base line-clamp-3 mb-3 font-normal leading-[1.3]">
+        <p className="text-slate-600 text-base line-clamp-2 mb-3 font-normal leading-[1.3]">
           {post.summary}
         </p>
+        {/* HASHTAG CATEGORÍA */}
+      <div className="flex flex-wrap gap-1.5">
+              <span className="text-blue-600 text-xs md:text-sm font-semibold hover:underline cursor-pointer bg-blue-50/50 px-2 py-0.5 rounded-md">
+                #{post.categories.name.replace(/\s+/g, '')}
+              </span>
+            </div>
         
         {post.image_url && (
           <div className="w-full aspect-video rounded-xl overflow-hidden mb-4 border border-slate-50 shadow-inner">
@@ -122,19 +130,25 @@ export default function SocialPostCard({ post }: SocialPostCardProps) {
         )}
       </Link>
 
-      {/* HASHTAG CATEGORÍA */}
-      <div className="flex flex-wrap gap-2 mb-6">
-        <span className="text-blue-600 text-sm font-bold tracking-wider hover:underline cursor-pointer">
-          #{post.categories.name.replace(/\s+/g, '')}
-        </span>
-      </div>
-
       {/* FOOTER: ACCIONES SOCIALES CON MÉTRICAS REALES */}
       <div className="mt-auto pt-3 border-t border-black/6 flex items-center justify-between">
         <div className="flex items-center gap-3 md:gap-5">
-          <button className="flex items-center gap-1 md:gap-2 text-slate-500 hover:text-red-500 transition-colors group/btn">
-            <Heart size={16} className="group-hover/btn:fill-red-500/10" />
-            <span className="text-xs font-bold">{formatNumber(post.likes || 0)}</span>
+          <button 
+            onClick={(e) => {
+              e.preventDefault(); 
+              toggleLike();
+            }}
+            className={`flex items-center gap-1 md:gap-2 transition-colors group/btn ${
+              isLiked ? 'text-red-500' : 'text-slate-500 hover:text-red-500'
+            }`}
+          >
+            <Heart 
+              size={16} 
+              className={isLiked ? 'fill-current' : 'group-hover/btn:fill-red-500/10'} 
+            />
+            <span className="text-xs font-bold">
+              {formatNumber(metrics.likes || post.likes || 0)}
+            </span>
           </button>
           <button className="flex items-center gap-1 md:gap-2 text-slate-500 hover:text-blue-600 transition-colors group/btn">
             <MessageSquare size={16} className="group-hover/btn:fill-blue-600/10" />

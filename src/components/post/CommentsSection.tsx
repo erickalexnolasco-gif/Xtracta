@@ -5,6 +5,7 @@ import { commentsService, type Comment } from "../../hooks/services.commets";
 import { useAuth } from "../../contexts/AuthContext";
 import { formatDistanceToNow } from "date-fns";
 import { es } from "date-fns/locale";
+import { toast } from "sonner";
 
 interface CommentsSectionProps {
   postId: string;
@@ -25,7 +26,7 @@ export default function CommentsSection({ postId }: CommentsSectionProps) {
     let isMounted = true; // Buena práctica para evitar actualizar estado si el componente se desmonta
 
     async function loadComments() {
-      setLoading(true);
+      
       const data = await commentsService.getCommentsByPost(postId);
       
       if (isMounted) {
@@ -42,8 +43,12 @@ export default function CommentsSection({ postId }: CommentsSectionProps) {
   }, [postId]); // Solo volvemos a cargar si el postId cambia
 
   // ... resto del código EXACTAMENTE IGUAL
-  async function handleSubmitComment() {
-    if (!user || !newComment.trim()) return;
+async function handleSubmitComment() {
+    // 👇 Validamos que no esté vacío y que no pase de 1000 caracteres
+    if (!user || !newComment.trim() || newComment.length > 1000) {
+      toast.error("El comentario debe tener entre 1 y 1000 caracteres.");
+      return;
+    }
 
     setSubmitting(true);
     const comment = await commentsService.createComment(
@@ -61,7 +66,7 @@ export default function CommentsSection({ postId }: CommentsSectionProps) {
   }
 
   async function handleSubmitReply(parentId: string) {
-    if (!user || !replyContent.trim()) return;
+    if (!user || !replyContent.trim() || replyContent.length > 1000) return;
 
     setSubmitting(true);
     const reply = await commentsService.createComment(
@@ -140,6 +145,7 @@ export default function CommentsSection({ postId }: CommentsSectionProps) {
               value={newComment}
               onChange={(e) => setNewComment(e.target.value)}
               disabled={submitting}
+              maxLength={1000} // 👈 BLOQUEO EN EL FRONTEND
             />
             <div className="flex justify-between items-center mt-4">
               <p className="text-[11px] text-gray-400 font-medium tracking-wide">

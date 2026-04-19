@@ -36,7 +36,7 @@ export default function Post() {
       id: heading.id || `section-${index}`,
       title: heading.textContent || "",
     }));
-  }, [post?.content]);
+  }, [post]);
 
   // Fetch post
   useEffect(() => {
@@ -48,7 +48,7 @@ export default function Post() {
         const { data: postData, error: postError } = await supabase
           .from("posts")
           .select(
-            "id, title, summary, content, image_url, published_at, read_time, authors(name, username), categories(name), types(name)",
+            "id, title, summary, content, image_url, published_at, read_time, authors(name, username,avatar), categories(name), types(name)",
           )
           .eq("id", id)
           .single();
@@ -65,9 +65,9 @@ export default function Post() {
         console.error("Error:", error);
         toast.error("Error al cargar el artículo");
         navigate("/");
-      } finally {
+      } 
         setLoading(false);
-      }
+      
     }
     fetchPost();
   }, [id, navigate]);
@@ -91,7 +91,7 @@ export default function Post() {
     }, 300);
 
     return () => clearTimeout(timer);
-  }, [post?.content]);
+  }, [post]);
 
   // Scroll tracking
   useEffect(() => {
@@ -115,7 +115,7 @@ export default function Post() {
       }
     };
 
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, [tableOfContents]);
 

@@ -5,6 +5,7 @@ import { usePostMetrics } from "../../hooks/usePostMetrics";
 import { toast } from "sonner";
 import { useState } from "react";
 import LoginPrompt from "../auth/LoginPrompt";
+import { Link } from "react-router-dom";
 
 interface PostContentProps {
   post: any;
@@ -127,18 +128,12 @@ export default function PostContent({ post }: PostContentProps) {
             {metrics.shares > 0 && <span>{metrics.shares}</span>}
           </button>
 
-          <a
+          <Link 
+            to="/" // O si tienes una ruta específica: to={`/categoria/${post.categories?.name}`}
             className="text-[13px] font-bold text-blue-600 bg-blue-50 px-4 py-1.5 rounded-full hover:bg-blue-100 transition-colors"
-            href="#"
-          >
+            >
             #{post.categories?.name || "Contabilidad"}
-          </a>
-          <a
-            className="text-[13px] font-bold text-blue-600 bg-blue-50 px-4 py-1.5 rounded-full hover:bg-blue-100 transition-colors"
-            href="#"
-          >
-            #Xtracta
-          </a>
+          </Link>
         </div>
       </div>
     </>

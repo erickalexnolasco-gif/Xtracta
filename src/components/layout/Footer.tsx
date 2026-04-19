@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { 
-  Linkedin, Twitter, Instagram, Mail, 
+  Linkedin, 
   ArrowRight, ChevronRight, Zap 
 } from 'lucide-react';
 
@@ -20,7 +20,7 @@ export default function Footer() {
             <div className="absolute -bottom-24 -left-24 size-100 bg-indigo-500/10 blur-[100px] rounded-full" />
 
             <div className="relative z-10 flex flex-col lg:flex-row items-center justify-between gap-16">
-              <div className="max-w-3xl text-center lg:text-left">
+              <div className="max-w-3xl  lg:text-left">
                 {/* Badge flotante mejorado */}
                 <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/5 backdrop-blur-md border border-white/10 rounded-full mb-8">
                   <Zap size={16} className="text-blue-400 animate-pulse" />
@@ -32,11 +32,11 @@ export default function Footer() {
                   <span className="bg-linear-to-r from-[#01E7FF] to-[#1819FF] bg-clip-text text-transparent">comienza con <span className='font-normal text-6xl md:text-8xl' style={{ fontFamily: 'MuseoModerno, sans-serif' }}>Xtracta.</span></span>
                 </h2>
                 
-                <p className="text-slate-400 text-lg md:text-xl font-medium max-w-xl leading-relaxed">
+                <p className="text-slate-400 text-base md:text-xl md:font-medium max-w-xl leading-relaxed">
                   Automatiza lo técnico, domina lo estratégico.<br />La plataforma que procesa miles de XML en segundos con precisión absoluta.
                 </p>
               </div>
-
+              {/*
               <div className="flex flex-col sm:flex-row gap-5 w-full lg:w-auto shrink-0">
                 <button className="bg-white text-black px-10 py-5 rounded-full font-bold text-lg hover:bg-blue-600 hover:text-white hover:-translate-y-1 transition-all duration-300 shadow-2xl active:scale-95 flex items-center justify-center gap-3">
                   Pruébalo gratis <ArrowRight size={20} />
@@ -44,13 +44,13 @@ export default function Footer() {
                 <button className="bg-white/5 backdrop-blur-xl text-white border border-white/10 px-10 py-5 rounded-full font-bold text-lg hover:bg-white/10 transition-all flex items-center justify-center gap-2">
                   Agendar Demo
                 </button>
-              </div>
+              </div> */}
             </div>
           </div>
         </section>
 
 {/* ==================== FOOTER COMPACTO (APPLE STYLE) ==================== */}
-      <div className="bg-white border-t border-black/5 pt-16 pb-10">
+      <div className="bg-white border-t border-black/5 pt-16">
         <div className="container mx-auto px-6 max-w-6xl">
           <div className="grid grid-cols-1 md:grid-cols-12 gap-12 md:gap-8">
             
@@ -69,14 +69,11 @@ export default function Footer() {
               {/* Redes Sociales abajo de la descripción */}
               <div className="flex flex-wrap gap-2.5 pt-2">
                 {[
-                  { Icon: Linkedin, label: 'LinkedIn' },
-                  { Icon: Twitter, label: 'Twitter' },
-                  { Icon: Instagram, label: 'Instagram' },
-                  { Icon: Mail, label: 'Email' }
+                  { Icon: Linkedin, label: 'LinkedIn' }
                 ].map((item, i) => (
                   <a 
                     key={i} 
-                    href="#" 
+                    href="https://www.linkedin.com/company/xtracta-mx/posts/?feedView=all" 
                     className="w-10 h-10 rounded-xl bg-white flex items-center justify-center text-gray-500 hover:bg-[#0071e3] hover:text-white transition-all duration-300 border border-black/3 shadow-sm"
                   >
                     <item.Icon size={18} />
@@ -88,14 +85,14 @@ export default function Footer() {
             {/* BLOQUE 2: HERRAMIENTAS */}
             <div className="md:col-span-2 space-y-5">
               <h4 className="font-bold text-[#1d1d1f] text-xs uppercase tracking-[0.2em]">Herramientas</h4>
-              <ul className="space-y-3">
+          {/*    <ul className="space-y-3">
                 {[
                   // 👇 Ahora usamos objetos con nombre y su respectivo enlace
                   { name: 'Convertidor XML', href: '/herramientas/convertidor-xml' }
                 ].map((item) => (
                 // 👇 Usamos item.name para la key
                 <li key={item.name}>
-                  {/* 👇 Le pasamos el item.href al atributo href */}
+                  {/* 👇 Le pasamos el item.href al atributo href 
                     <Link 
                       to={item.href} // En Link se usa "to" en lugar de "href"
                       className="text-gray-500 text-sm font-semibold hover:text-[#0071e3] transition-colors flex items-center group"
@@ -105,12 +102,12 @@ export default function Footer() {
                     </Link>
                   </li>
                 ))}
-              </ul>
-            </div>
+              </ul> */}
+            </div> 
 
             {/* BLOQUE 3: RECURSOS */}
             <div className="md:col-span-2 space-y-5">
-              <h4 className="font-bold text-[#1d1d1f] text-xs uppercase tracking-[0.2em]">Herramientas</h4>
+              <h4 className="font-bold text-[#1d1d1f] text-xs uppercase tracking-[0.2em]">Recursos</h4>
               <ul className="space-y-3">
                 {[
                   // 👇 Ahora usamos objetos con nombre y su respectivo enlace
@@ -146,13 +143,13 @@ export default function Footer() {
 
           {/* Bottom Bar */}
           <div className="mt-10 pt-8 border-t border-black/5 flex flex-col sm:flex-row justify-between items-center gap-4">
-            <p className="text-[#86868b] text-[11px] font-medium tracking-tight">
+            <p className="text-[#86868b] text-sm font-medium tracking-tight">
               © {currentYear} Xtracta. Hecho con pasión por la tecnología contable.
             </p>
-            <div className="flex gap-8 text-[11px] font-bold text-[#86868b]">
-              <a href="#" className="hover:text-[#1d1d1f] transition-colors tracking-tight">Privacidad</a>
-              <a href="#" className="hover:text-[#1d1d1f] transition-colors tracking-tight">Términos</a>
-              <a href="#" className="hover:text-[#1d1d1f] transition-colors tracking-tight">Cookies</a>
+            <div className="flex gap-8 text-sm font-medium text-[#86868b]">
+              <Link to="/" className="hover:text-[#1d1d1f] transition-colors tracking-tight">Privacidad</Link>
+              <Link to="/" className="hover:text-[#1d1d1f] transition-colors tracking-tight">Términos</Link>
+              <Link to="/" className="hover:text-[#1d1d1f] transition-colors tracking-tight">Cookies</Link>
             </div>
           </div>
         </div>

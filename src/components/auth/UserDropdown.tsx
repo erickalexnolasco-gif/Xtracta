@@ -135,16 +135,16 @@ export default function UserDropdown() {
                 </>
               )}
 
-              {/* Profile */}
+              {/* Profile 
               <button className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl hover:bg-gray-100/80 transition-colors group text-left">
                 <div className="flex items-center gap-3 text-gray-700 group-hover:text-gray-900">
                   <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>verified</span>
                   <span className="text-[14px] font-medium">Profile</span>
                 </div>
                 <span className="material-symbols-outlined text-gray-400 text-[16px]">check</span>
-              </button>
+              </button> */}
 
-              {/* Community */}
+              {/* Community 
               <button className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl hover:bg-gray-100/80 transition-colors group text-left">
                 <div className="flex items-center gap-3 text-gray-700 group-hover:text-gray-900">
                   <span className="material-symbols-outlined">group</span>
@@ -153,9 +153,9 @@ export default function UserDropdown() {
                 <div className="h-6 w-6 rounded-full bg-gray-100 flex items-center justify-center border border-gray-200">
                   <span className="text-[14px] font-medium text-gray-600">+</span>
                 </div>
-              </button>
+              </button> */}
 
-              {/* Subscription */}
+              {/* Subscription 
               <button className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl hover:bg-gray-100/80 transition-colors group text-left">
                 <div className="flex items-center gap-3 text-gray-700 group-hover:text-gray-900">
                   <span className="material-symbols-outlined">credit_card</span>
@@ -165,25 +165,25 @@ export default function UserDropdown() {
                   <span className="material-symbols-rounded text-green-800 text-[12px]! font-bold!">bolt</span>
                   <span className="text-xs font-bold text-green-800 tracking-wider">PRO</span>
                 </div>
-              </button>
+              </button> */}
 
-              {/* Settings */}
+              {/* Settings 
               <button className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl hover:bg-gray-100/80 transition-colors group text-left">
                 <div className="flex items-center gap-3 text-gray-700 group-hover:text-gray-900">
                   <span className="material-symbols-outlined">settings</span>
                   <span className="text-[14px] font-medium">Settings</span>
                 </div>
-              </button>
+              </button> */}
+              {/*
+              <div className="h-px bg-gray-100 my-1 mx-2"></div> */}
 
-              <div className="h-px bg-gray-100 my-1 mx-2"></div>
-
-              {/* Help Center */}
+              {/* Help Center 
               <button className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl hover:bg-gray-100/80 transition-colors group text-left">
                 <div className="flex items-center gap-3 text-gray-700 group-hover:text-gray-900">
                   <span className="material-symbols-outlined">info</span>
                   <span className="text-[14px] font-medium">Help center</span>
                 </div>
-              </button>
+              </button> */}
 
               {/* Sign Out */}
               <button 
@@ -192,7 +192,7 @@ export default function UserDropdown() {
               >
                 <div className="flex items-center gap-3 text-red-500">
                   <span className="material-symbols-outlined">logout</span>
-                  <span className="text-[14px] font-medium">Sign out</span>
+                  <span className="text-[14px] font-medium">Cerras Sesión</span>
                 </div>
               </button>
             </div>
